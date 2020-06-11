@@ -28,18 +28,18 @@ export const LoginScreen = (props: any): React.ReactElement => {
         ]}
       />
       <SafeAreaView style={styles.root}>
-        <View style={[styles.header, styles.doubleInputMargin]}>
-          <Text category="h2" appearance="alternative">
-            Hello
-          </Text>
-          <Text
-            style={styles.headerSubtitle}
-            category="s2"
-            appearance="alternative">
-            Sign in to your account
-          </Text>
-        </View>
-        <View style={styles.auth}>
+        <View style={styles.top}>
+          <View style={[styles.header, styles.doubleInputMargin]}>
+            <Text category="h2" appearance="alternative">
+              Hello
+            </Text>
+            <Text
+              style={styles.headerSubtitle}
+              category="s2"
+              appearance="alternative">
+              Sign in to your account
+            </Text>
+          </View>
           <Input
             placeholder="Email"
             status="control"
@@ -58,7 +58,7 @@ export const LoginScreen = (props: any): React.ReactElement => {
             </Button>
           </View>
         </View>
-        <View>
+        <View style={styles.bottom}>
           <Button style={styles.inputMargin}>SIGN IN</Button>
           <Button
             style={styles.doubleInputMargin}
@@ -78,6 +78,7 @@ const sizedStyleSheet = (size: number) =>
   StyleSheet.create({
     root: {
       flex: 1,
+      justifyContent: 'space-between',
     },
     header: {
       alignItems: 'center',
@@ -85,7 +86,8 @@ const sizedStyleSheet = (size: number) =>
     headerSubtitle: {
       marginTop: size * 2,
     },
-    auth: {},
+    top: {},
+    bottom: {},
     forgotYourPassword: {
       alignItems: 'flex-end',
     },

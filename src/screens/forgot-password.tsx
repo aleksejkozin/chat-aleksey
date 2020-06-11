@@ -1,18 +1,26 @@
-import React from "react"
-import { StyleSheet } from "react-native"
-import { TopNavigation } from "@ui-kitten/components"
-import { SafeAreaView } from "react-native-safe-area-context"
+import React from 'react';
 
-export const ForgotPasswordScreen = (props): React.ReactElement => {
+import {
+  TextHeader,
+  FullScreenInput,
+  TextButton,
+  View,
+  Button,
+  FullScreen,
+} from '../components/ui';
+
+export const ForgotPasswordScreen = (props: any): React.ReactElement => {
   return (
-    <SafeAreaView style={styles.root}>
-      <TopNavigation title="Kitten Tricks" />
-    </SafeAreaView>
-  )
-}
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-  },
-})
+    <FullScreen image={require('../assets/images/view-of-mountain.jpg')}>
+      <View>
+        <TextHeader
+          title="Forgot Password"
+          sub="Please enter your email address"
+          mb={4}
+        />
+        <FullScreenInput placeholder="Email" icon="email-outline" mb={2} />
+      </View>
+      <Button>RESET PASSWORD</Button>
+    </FullScreen>
+  );
+};

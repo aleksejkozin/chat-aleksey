@@ -1,22 +1,25 @@
 import React from 'react';
-import {StyleSheet} from 'react-native';
 
 import {
   TextHeader,
-  Input,
+  FullScreenInput,
   TextButton,
   View,
   Button,
-  Screen,
+  FullScreen,
 } from '../components/ui';
 
 export const LoginScreen = (props: any): React.ReactElement => {
   return (
-    <Screen image={require('../assets/images/leaves.jpg')}>
+    <FullScreen image={require('../assets/images/leaves.jpg')}>
       <View>
         <TextHeader title="Hello" sub="Sign in to your account" mb={4} />
-        <Input placeholder="Email" icon="email-outline" mb={2} />
-        <Input placeholder="Password" icon="eye-off" secureTextEntry={true} />
+        <FullScreenInput placeholder="Email" icon="email-outline" mb={2} />
+        <FullScreenInput
+          placeholder="Password"
+          icon="eye-off"
+          secureTextEntry={true}
+        />
         <View style={{alignItems: 'flex-end'}}>
           <TextButton>Forgot your password?</TextButton>
         </View>
@@ -28,8 +31,6 @@ export const LoginScreen = (props: any): React.ReactElement => {
         </Button>
         <TextButton>Don't have any account? Sign Up</TextButton>
       </View>
-    </Screen>
+    </FullScreen>
   );
 };
-
-const styles = StyleSheet.create({});

@@ -10,6 +10,7 @@ import * as eva from '@eva-design/eva';
 import {LoginScreen} from '../screens/login';
 import {SignUpScreen} from '../screens/signup';
 import {ForgotPasswordScreen} from '../screens/forgot-password';
+import {ChatScreen} from '../screens/chat';
 
 const navigatorTheme = {
   ...DefaultTheme,
@@ -24,9 +25,10 @@ const Stack = createStackNavigator();
 
 export const Navigator = (): React.ReactElement => (
   <Stack.Navigator headerMode="none">
-    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="Chat" component={ChatScreen} />
     <Stack.Screen name="SignUp" component={SignUpScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    <Stack.Screen name="Login" component={LoginScreen} />
   </Stack.Navigator>
 );
 

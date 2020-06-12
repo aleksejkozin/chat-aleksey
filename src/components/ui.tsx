@@ -5,25 +5,12 @@ import {
   Text as KittenText,
   CheckBox as KittenCheckBox,
   Layout as KittenLayout,
-  List,
 } from '@ui-kitten/components';
-import {
-  Icon,
-  withStyles,
-  StyleService,
-  useStyleSheet,
-} from '@ui-kitten/components';
-import {
-  View as NativeView,
-  StyleSheet,
-  ImageBackground,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Icon, StyleService, useStyleSheet} from '@ui-kitten/components';
+import {View as NativeView, StyleSheet, ImageBackground} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
-import {Text} from 'react-native-svg';
-import {SvgXml} from 'react-native-svg';
+var md5 = require('md5');
 
 const SPACING = 16;
 const applySpace = (x?: number): number | undefined => (x ? x * SPACING : x);
@@ -127,7 +114,23 @@ export const FullScreenInput = (props: any) => (
   <Input status="control" {...props} />
 );
 
-export const ChatMessage = ({text, mine}: {text?: string; mine?: boolean}) => {
+const ChatMessageName = spacingWrapper(({name, ...props}: any) => (
+  <KittenText
+    {...props}
+    style={{fontWeight: 'bold', color: '#' + md5(name).substring(0, 6)}}>
+    {name}
+  </KittenText>
+));
+
+export const ChatMessage = ({
+  text,
+  name,
+  mine,
+}: {
+  text?: string;
+  name?: string;
+  mine?: boolean;
+}) => {
   const styles = useStyleSheet(themedStyles);
   const bubbleColor = mine
     ? styles.mineChatBubbleColor
@@ -144,6 +147,7 @@ export const ChatMessage = ({text, mine}: {text?: string; mine?: boolean}) => {
         },
       ]}>
       <Layout p={1} style={[styles.chatBubble, bubbleColor]}>
+        {!mine && <ChatMessageName name={name} />}
         <KittenText
           style={mine ? styles.mineChatTextColor : styles.chatTextColor}>
           {text}
@@ -191,15 +195,12 @@ export const Screen = ({
   style,
   fullscreen = true,
   overlay = 'rgba(0, 0, 0, 0.45)',
-  bottomEdge = false,
-  ...props
 }: {
   children?: any;
   image?: any;
   style?: object;
   fullscreen?: boolean;
   overlay?: string;
-  bottomEdge?: boolean;
 }) => {
   if (fullscreen) {
     return (
@@ -223,32 +224,6 @@ export const Screen = ({
     );
   }
 };
-
-const styles = StyleSheet.create({
-  talkBubble: {
-    backgroundColor: 'transparent',
-    marginLeft: 100,
-  },
-  talkBubbleSquare: {
-    width: 120,
-    height: 80,
-    backgroundColor: 'red',
-    borderRadius: 10,
-  },
-  talkBubbleTriangle: {
-    position: 'absolute',
-    left: -16,
-    top: 26,
-    width: 0,
-    height: 0,
-    borderTopColor: 'transparent',
-    borderTopWidth: 13,
-    borderRightWidth: 26,
-    borderRightColor: 'red',
-    borderBottomWidth: 13,
-    borderBottomColor: 'transparent',
-  },
-});
 
 const themedStyles = StyleService.create({
   chatMessage: {

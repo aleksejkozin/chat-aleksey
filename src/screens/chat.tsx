@@ -1,30 +1,14 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ImageBackground,
-  View as NativeView,
-  KeyboardAvoidingView,
-  Platform,
-  FlatList,
-} from 'react-native';
-import {
-  Text,
-  TopNavigation,
-  StyleService,
-  useStyleSheet,
-} from '@ui-kitten/components';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {KeyboardAvoidingView, Platform, FlatList} from 'react-native';
+import {StyleService, useStyleSheet} from '@ui-kitten/components';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 import {
-  TextHeader,
   Input,
-  TextButton,
   View,
   SquareButton,
-  PADDINGS,
   Screen,
   Layout,
-  TitleText,
   ChatMessage,
 } from '../components/ui';
 
@@ -34,13 +18,16 @@ export const ChatScreen = (props: any): React.ReactElement => {
   const messages = [
     {
       text: 'Awesome!',
+      name: 'JC Denton',
       mine: true,
     },
     {
+      name: 'Aleksey Kozin',
       text: 'Sure!\nI can start right away!',
       mine: false,
     },
     {
+      name: 'JC Denton',
       text: 'Hello, Aleksey,\nCould you make a cool app for me?',
       mine: true,
     },

@@ -10,7 +10,12 @@ import {
   ScreenRootView,
 } from '../components/ui';
 
-export const LoginScreen = (props: any): React.ReactElement => {
+export const LoginScreen = ({navigation}: any): React.ReactElement => {
+  const OnSignIn = () => null;
+  const OnSignInFacebook = () => null;
+  const OnSignUp = () => navigation.navigate('SignUp');
+  const OnForgotPassword = () => navigation.navigate('ForgotPassword');
+
   return (
     <Screen image={require('../assets/images/leaves.jpg')}>
       <ScreenRootView>
@@ -23,15 +28,17 @@ export const LoginScreen = (props: any): React.ReactElement => {
             secureTextEntry={true}
           />
           <View style={{alignItems: 'flex-end'}}>
-            <TextButton>Forgot your password?</TextButton>
+            <TextButton onPress={OnForgotPassword}>
+              Forgot your password?
+            </TextButton>
           </View>
         </View>
         <View>
-          <Button mb={2}>SIGN IN</Button>
-          <Button mb={4} icon="facebook">
+          <Button onPress={OnSignIn} mb={2}>SIGN IN</Button>
+          <Button onPress={OnSignInFacebook} mb={4} icon="facebook">
             SIGN IN USING FACEBOOK
           </Button>
-          <TextButton>Don't have any account? Sign Up</TextButton>
+          <TextButton onPress={OnSignUp}>Don't have any account? Sign Up</TextButton>
         </View>
       </ScreenRootView>
     </Screen>

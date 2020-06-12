@@ -206,7 +206,7 @@ export const Screen = ({
   image,
   style,
   fullscreen = true,
-  overlay = 'rgba(0, 0, 0, 0.45)',
+  overlay = 'rgba(0, 0, 0, 0.50)',
 }: {
   children?: any;
   image?: any;
@@ -216,7 +216,7 @@ export const Screen = ({
 }) => {
   if (fullscreen) {
     return (
-      <ImageBackground source={image} style={{flex: 1}}>
+      <ImageBackground source={image} width={10} height={10}  style={{flex: 1}}>
         <NativeView
           style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
         />
@@ -226,7 +226,7 @@ export const Screen = ({
   } else {
     return (
       <SafeAreaView style={{flex: 1, ...style}}>
-        <ImageBackground source={image} style={{flex: 1}}>
+        <ImageBackground source={image}width={10} height={10} style={{flex: 1}}>
           <NativeView
             style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
           />

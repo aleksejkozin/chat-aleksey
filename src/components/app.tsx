@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {AppearanceProvider} from 'react-native-appearance';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {ApplicationProvider, IconRegistry, Text} from '@ui-kitten/components';
@@ -23,24 +23,32 @@ const navigatorTheme = {
 
 const Stack = createStackNavigator();
 
-export const Navigator = (): React.ReactElement => (
+export const AuthorizedNavigator = (): React.ReactElement => (
   <Stack.Navigator headerMode="none">
     <Stack.Screen name="Chat" component={ChatScreen} />
+  </Stack.Navigator>
+);
+
+export const UnauthorizedNavigator = (): React.ReactElement => (
+  <Stack.Navigator headerMode="none">
     <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="Chat" component={ChatScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="SignUp" component={SignUpScreen} />
   </Stack.Navigator>
 );
 
-const App = ({mapping, theme}): React.ReactElement => {
+const App = (): React.ReactElement => {
+  const [authorized, setAuthorized] = useState(false);
+
   return (
     <React.Fragment>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
-        <ApplicationProvider {...eva} theme={eva.dark}>
+        <ApplicationProvider {...eva} theme={eva.light}>
           <SafeAreaProvider>
             <NavigationContainer theme={navigatorTheme}>
-              <Navigator />
+              {authorized ? <AuthorizedNavigator /> : <UnauthorizedNavigator />}
             </NavigationContainer>
           </SafeAreaProvider>
         </ApplicationProvider>

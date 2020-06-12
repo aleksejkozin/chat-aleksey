@@ -12,7 +12,11 @@ import {
   ScreenRootView,
 } from '../components/ui';
 
-export const SignUpScreen = (props: any): React.ReactElement => {
+export const SignUpScreen = ({navigation}: any): React.ReactElement => {
+  const OnSignIn = () => navigation.navigate('Login');
+  const OnRigisterFacebook = () => null;
+  const OnSignUp = () => null;
+
   return (
     <Screen
       image={require('../assets/images/road-nea-mountains.jpg')}
@@ -31,11 +35,15 @@ export const SignUpScreen = (props: any): React.ReactElement => {
           <Checkbox>I read and agree on Terms & Conditions</Checkbox>
         </View>
         <View>
-          <Button mb={2}>SIGN UP</Button>
-          <Button mb={4} icon="facebook">
+          <Button onPress={OnSignUp} mb={2}>
+            SIGN UP
+          </Button>
+          <Button onPress={OnRigisterFacebook} mb={4} icon="facebook">
             REGISTER USING FACEBOOK
           </Button>
-          <TextButton>Alreade have account? Sign In</TextButton>
+          <TextButton onPress={OnSignIn}>
+            Alreade have account? Sign In
+          </TextButton>
         </View>
       </ScreenRootView>
     </Screen>

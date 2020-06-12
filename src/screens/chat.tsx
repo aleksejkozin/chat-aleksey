@@ -30,6 +30,7 @@ import {
 
 export const ChatScreen = (props: any): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
+  const insets = useSafeAreaInsets();
   const messages = [
     {
       text: 'Awesome!',
@@ -52,6 +53,7 @@ export const ChatScreen = (props: any): React.ReactElement => {
       overlay={styles.overlay.backgroundColor + 'DD'}>
       <KeyboardAvoidingView
         style={{flex: 1}}
+        keyboardVerticalOffset={insets.top}
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
         <View style={{flex: 1}} pl={1} pr={1}>
           <FlatList

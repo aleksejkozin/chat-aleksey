@@ -20,16 +20,19 @@ export const ChatScreen = (props: any): React.ReactElement => {
       text: 'Awesome!',
       name: 'JC Denton',
       mine: true,
+      time: Date.now(),
     },
     {
       name: 'Aleksey Kozin',
       text: 'Sure!\nI can start right away!',
       mine: false,
+      time: Date.now(),
     },
     {
       name: 'JC Denton',
       text: 'Hello, Aleksey,\nCould you make a cool app for me?',
       mine: true,
+      time: Date.now(),
     },
   ];
   return (

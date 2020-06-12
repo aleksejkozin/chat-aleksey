@@ -10,6 +10,8 @@ import {Icon, StyleService, useStyleSheet} from '@ui-kitten/components';
 import {View as NativeView, StyleSheet, ImageBackground} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
+import moment from 'moment';
+
 var md5 = require('md5');
 
 const SPACING = 16;
@@ -126,10 +128,12 @@ export const ChatMessage = ({
   text,
   name,
   mine,
+  time,
 }: {
   text?: string;
   name?: string;
   mine?: boolean;
+  time?: any;
 }) => {
   const styles = useStyleSheet(themedStyles);
   const bubbleColor = mine
@@ -137,7 +141,6 @@ export const ChatMessage = ({
     : styles.chatBubbleColor;
   return (
     <View
-      level="2"
       mb={1}
       style={[
         styles.chatMessage,
@@ -147,7 +150,16 @@ export const ChatMessage = ({
         },
       ]}>
       <Layout p={1} style={[styles.chatBubble, bubbleColor]}>
-        {!mine && <ChatMessageName name={name} />}
+        <View
+          style={{
+            flexDirection: 'row-reverse',
+            justifyContent: 'space-between',
+          }}>
+          <KittenText style={styles.time}>
+            {moment(time).format('HH:mm')}
+          </KittenText>
+          {!mine && <ChatMessageName name={name} />}
+        </View>
         <KittenText
           style={mine ? styles.mineChatTextColor : styles.chatTextColor}>
           {text}
@@ -232,6 +244,7 @@ const themedStyles = StyleService.create({
   },
   chatBubble: {
     minWidth: '60%',
+    maxWidth: '90%',
     borderRadius: 8,
   },
   chatBubbleColor: {
@@ -250,5 +263,9 @@ const themedStyles = StyleService.create({
     backgroundColor: 'background-basic-color-2',
     borderColor: 'background-basic-color-4',
     color: 'color-primary-600',
+  },
+  time: {
+    color: 'text-hint-color',
+    fontSize: 12,
   },
 });

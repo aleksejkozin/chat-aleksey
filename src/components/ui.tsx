@@ -5,8 +5,14 @@ import {
   Text as KittenText,
   CheckBox as KittenCheckBox,
   Layout as KittenLayout,
+  List,
 } from '@ui-kitten/components';
-import {Icon} from '@ui-kitten/components';
+import {
+  Icon,
+  withStyles,
+  StyleService,
+  useStyleSheet,
+} from '@ui-kitten/components';
 import {
   View as NativeView,
   StyleSheet,
@@ -15,9 +21,12 @@ import {
   Platform,
 } from 'react-native';
 import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import ChatBubbleTail from './chat-bubble-tail';
+import {Text} from 'react-native-svg';
+import {SvgXml} from 'react-native-svg';
 
 const SPACING = 16;
-const applySpace = (x?: number): number => (x ? x * SPACING : x);
+const applySpace = (x?: number): number | undefined => (x ? x * SPACING : x);
 
 const spacingWrapper = (Comp: any) => ({
   ml,
@@ -34,25 +43,29 @@ const spacingWrapper = (Comp: any) => ({
   ...props
 }: any) => (
   <Comp
-    style={{
-      marginBottom: applySpace(mb),
-      marginLeft: applySpace(ml),
-      marginRight: applySpace(mr),
-      marginTop: applySpace(mt),
-      margin: applySpace(m),
-      paddingLeft: applySpace(pl),
-      paddingRight: applySpace(pr),
-      paddingTop: applySpace(pt),
-      paddingBottom: applySpace(pb),
-      padding: applySpace(p),
-      ...style,
-    }}
     {...props}
+    style={[
+      {
+        marginBottom: applySpace(mb),
+        marginLeft: applySpace(ml),
+        marginRight: applySpace(mr),
+        marginTop: applySpace(mt),
+        margin: applySpace(m),
+        paddingLeft: applySpace(pl),
+        paddingRight: applySpace(pr),
+        paddingTop: applySpace(pt),
+        paddingBottom: applySpace(pb),
+        padding: applySpace(p),
+      },
+      style,
+    ]}
   />
 );
 
-const UIIcon = (name: string) => (style: any): any =>
-  name ? <Icon {...style} name={name} /> : null;
+const UIIcon = (name: string, color = '') => (style: any): any =>
+  name ? (
+    <Icon {...(color ? {fill: color} : {})} {...style} name={name} />
+  ) : null;
 
 export const Checkbox = spacingWrapper(
   ({children, ...props}: {children: any}) => (
@@ -82,19 +95,22 @@ export const SquareButton = spacingWrapper(
     size: number;
     children: any;
     style: any;
-  }) => (
-    <KittenButton
-      {...props}
-      status="basic"
-      style={{
-        ...style,
-        width: applySpace(size),
-        height: applySpace(size),
-      }}
-      accessoryLeft={UIIcon(icon)}>
-      {children}
-    </KittenButton>
-  ),
+  }) => {
+    const styles = useStyleSheet(themedStyles);
+    return (
+      <KittenButton
+        {...props}
+        status="basic"
+        style={[
+          style,
+          styles.squareButton,
+          {width: applySpace(size), height: applySpace(size)},
+        ]}
+        accessoryLeft={UIIcon(icon, styles.squareButton.color)}>
+        {children}
+      </KittenButton>
+    );
+  },
 );
 
 export const TextButton = spacingWrapper(({children, ...props}: any) => (
@@ -103,19 +119,42 @@ export const TextButton = spacingWrapper(({children, ...props}: any) => (
   </KittenButton>
 ));
 
-export const Input = spacingWrapper(({icon, ...props}: any) => (
-  <KittenInput accessoryRight={UIIcon(icon)} {...props} />
-));
+export const Input = spacingWrapper(({icon, ...props}: any) => {
+  return <KittenInput accessoryRight={UIIcon(icon)} {...props} />;
+});
 
 export const FullScreenInput = (props: any) => (
   <Input status="control" {...props} />
 );
 
-export const ChatMessage = ({text, mine}: {text?: string; mine?: boolean}) => (
-  <KittenText appearance="hint" category="c2">
-    {text}
-  </KittenText>
-);
+export const ChatMessage = ({text, mine}: {text?: string; mine?: boolean}) => {
+  const styles = useStyleSheet(themedStyles);
+  const bubbleColor = mine
+    ? styles.mineChatBubbleColor
+    : styles.chatBubbleColor;
+  return (
+    <View
+      level="2"
+      mb={1}
+      style={[
+        styles.chatMessage,
+        {
+          justifyContent: 'flex-end',
+          flexDirection: mine ? 'row' : 'row-reverse',
+        },
+      ]}>
+      <Layout p={1} style={[styles.chatBubble, bubbleColor]}>
+        <KittenText
+          style={mine ? styles.mineChatTextColor : styles.chatTextColor}>
+          {text}
+        </KittenText>
+      </Layout>
+      <View style={{width: 12, height: 15}}>
+        <ChatBubbleTail mirror={!mine} color={bubbleColor.backgroundColor} />
+      </View>
+    </View>
+  );
+};
 
 export const TitleText = spacingWrapper((props: any) => (
   <KittenText {...props} category="h2" appearance="alternative" />
@@ -132,33 +171,25 @@ export const Layout = spacingWrapper((props: any) => (
 ));
 
 export const TextHeader = spacingWrapper(
-  ({title, sub, style, ...props}: {title: string; sub: string; style: any}) => (
-    <View style={{alignItems: 'center', ...style}} {...props}>
-      <TitleText mb={2}>{title}</TitleText>
-      <SubtitleText>{sub}</SubtitleText>
+  ({title, sub, ...props}: {title: string; sub: string}) => (
+    <View {...props}>
+      <View style={{alignItems: 'center'}}>
+        <TitleText mb={2}>{title}</TitleText>
+        <SubtitleText>{sub}</SubtitleText>
+      </View>
     </View>
   ),
 );
 
-export const PADDINGS = {
-  pl: 1,
-  pr: 1,
-  pt: 2,
-  pb: 2,
-};
-
-export const FullScreen = ({children, ...props}: any) => (
-  <Screen {...props}>
-    <View style={{flex: 1, justifyContent: 'space-between'}} {...PADDINGS}>
-      {children}
-    </View>
-  </Screen>
+export const ScreenRootView = (props: any) => (
+  <View p={1} style={{flex: 1, justifyContent: 'space-between'}} {...props} />
 );
 
 export const Screen = ({
   children,
   image,
   style,
+  fullscreen = true,
   overlay = 'rgba(0, 0, 0, 0.45)',
   bottomEdge = false,
   ...props
@@ -166,28 +197,83 @@ export const Screen = ({
   children?: any;
   image?: any;
   style?: object;
+  fullscreen?: boolean;
   overlay?: string;
   bottomEdge?: boolean;
 }) => {
-  const insets = useSafeAreaInsets();
-
-  return (
-    <ImageBackground source={image} style={{flex: 1}}>
-      <NativeView
-        style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
-      />
-      {bottomEdge && (
-        <KittenLayout
-          style={{
-            bottom: 0,
-            right: 0,
-            left: 0,
-            height: insets.bottom + applySpace(4),
-            position: 'absolute',
-          }}
+  if (fullscreen) {
+    return (
+      <ImageBackground source={image} style={{flex: 1}}>
+        <NativeView
+          style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
         />
-      )}
-      <SafeAreaView style={{flex: 1, ...style}}>{children}</SafeAreaView>
-    </ImageBackground>
-  );
+        <SafeAreaView style={{flex: 1, ...style}}>{children}</SafeAreaView>
+      </ImageBackground>
+    );
+  } else {
+    return (
+      <SafeAreaView style={{flex: 1, ...style}}>
+        <ImageBackground source={image} style={{flex: 1}}>
+          <NativeView
+            style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
+          />
+          {children}
+        </ImageBackground>
+      </SafeAreaView>
+    );
+  }
 };
+
+const styles = StyleSheet.create({
+  talkBubble: {
+    backgroundColor: 'transparent',
+    marginLeft: 100,
+  },
+  talkBubbleSquare: {
+    width: 120,
+    height: 80,
+    backgroundColor: 'red',
+    borderRadius: 10,
+  },
+  talkBubbleTriangle: {
+    position: 'absolute',
+    left: -16,
+    top: 26,
+    width: 0,
+    height: 0,
+    borderTopColor: 'transparent',
+    borderTopWidth: 13,
+    borderRightWidth: 26,
+    borderRightColor: 'red',
+    borderBottomWidth: 13,
+    borderBottomColor: 'transparent',
+  },
+});
+
+const themedStyles = StyleService.create({
+  chatMessage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  chatBubble: {
+    minWidth: '60%',
+    borderRadius: 8,
+  },
+  chatBubbleColor: {
+    backgroundColor: 'background-basic-color-1',
+  },
+  mineChatBubbleColor: {
+    backgroundColor: 'color-primary-600',
+  },
+  chatTextColor: {
+    color: 'text-basic-color',
+  },
+  mineChatTextColor: {
+    color: 'color-primary-100',
+  },
+  squareButton: {
+    backgroundColor: 'background-basic-color-2',
+    borderColor: 'background-basic-color-4',
+    color: 'color-primary-600',
+  },
+});

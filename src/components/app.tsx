@@ -26,9 +26,9 @@ const Stack = createStackNavigator();
 export const Navigator = (): React.ReactElement => (
   <Stack.Navigator headerMode="none">
     <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="SignUp" component={SignUpScreen} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+    <Stack.Screen name="SignUp" component={SignUpScreen} />
   </Stack.Navigator>
 );
 
@@ -37,7 +37,7 @@ const App = ({mapping, theme}): React.ReactElement => {
     <React.Fragment>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
-        <ApplicationProvider {...eva} theme={eva.light}>
+        <ApplicationProvider {...eva} theme={eva.dark}>
           <SafeAreaProvider>
             <NavigationContainer theme={navigatorTheme}>
               <Navigator />

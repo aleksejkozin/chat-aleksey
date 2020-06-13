@@ -17,7 +17,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
   const OnForgotPassword = () => navigation.navigate('ForgotPassword');
 
   return (
-    <Screen image={require('../assets/images/leaves.jpg')}>
+    <Screen lightStatusBar image={require('../assets/images/leaves.jpg')}>
       <ScreenRootView>
         <View>
           <TextHeader title="Hello" sub="Sign in to your account" mb={4} />
@@ -34,11 +34,15 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
           </View>
         </View>
         <View>
-          <Button onPress={OnSignIn} mb={2}>SIGN IN</Button>
+          <Button onPress={OnSignIn} mb={2}>
+            SIGN IN
+          </Button>
           <Button onPress={OnSignInFacebook} mb={4} icon="facebook">
             SIGN IN USING FACEBOOK
           </Button>
-          <TextButton onPress={OnSignUp}>Don't have any account? Sign Up</TextButton>
+          <TextButton onPress={OnSignUp}>
+            Don't have any account? Sign Up
+          </TextButton>
         </View>
       </ScreenRootView>
     </Screen>

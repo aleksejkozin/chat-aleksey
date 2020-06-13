@@ -7,7 +7,12 @@ import {
   Layout as KittenLayout,
 } from '@ui-kitten/components';
 import {Icon, StyleService, useStyleSheet} from '@ui-kitten/components';
-import {View as NativeView, StyleSheet, ImageBackground} from 'react-native';
+import {
+  View as NativeView,
+  StyleSheet,
+  ImageBackground,
+  StatusBar,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
 import moment from 'moment';
@@ -206,30 +211,42 @@ export const Screen = ({
   image,
   style,
   fullscreen = true,
+  lightStatusBar = false,
   overlay = 'rgba(0, 0, 0, 0.50)',
 }: {
   children?: any;
   image?: any;
   style?: object;
   fullscreen?: boolean;
+  lightStatusBar?: boolean;
   overlay?: string;
 }) => {
+  const statusBar = lightStatusBar ? (
+    <StatusBar barStyle="light-content" />
+  ) : (
+    <StatusBar barStyle="dark-content" />
+  );
+
   if (fullscreen) {
     return (
-      <ImageBackground source={image} width={10} height={10}  style={{flex: 1}}>
+      <ImageBackground source={image} width={10} height={10} style={{flex: 1}}>
         <NativeView
           style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
         />
-        <SafeAreaView style={{flex: 1, ...style}}>{children}</SafeAreaView>
+        <SafeAreaView style={{flex: 1, ...style}}>
+          {statusBar}
+          {children}
+        </SafeAreaView>
       </ImageBackground>
     );
   } else {
     return (
       <SafeAreaView style={{flex: 1, ...style}}>
-        <ImageBackground source={image}width={10} height={10} style={{flex: 1}}>
+        <ImageBackground source={image} style={{flex: 1}}>
           <NativeView
             style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}
           />
+          {statusBar}
           {children}
         </ImageBackground>
       </SafeAreaView>

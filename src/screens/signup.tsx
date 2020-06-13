@@ -32,7 +32,6 @@ export const SignUpScreen = ({navigation}: any): React.ReactElement => {
             mb={2}
             secureTextEntry={true}
           />
-          <Checkbox>I read and agree on Terms & Conditions</Checkbox>
         </View>
         <View>
           <Button onPress={OnSignUp} mb={2}>

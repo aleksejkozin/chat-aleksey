@@ -10,7 +10,9 @@ import {
   ScreenRootView,
 } from '../components/ui';
 
-export const ForgotPasswordScreen = (props: any): React.ReactElement => {
+export const ForgotPasswordScreen = ({navigation}: any): React.ReactElement => {
+  const OnSignIn = () => navigation.navigate('Login');
+
   return (
     <Screen image={require('../assets/images/view-of-mountain.jpg')}>
       <ScreenRootView>
@@ -22,7 +24,12 @@ export const ForgotPasswordScreen = (props: any): React.ReactElement => {
           />
           <FullScreenInput placeholder="Email" icon="email-outline" mb={2} />
         </View>
-        <Button>RESET PASSWORD</Button>
+        <View>
+          <Button mb={4}>RESET PASSWORD</Button>
+          <TextButton onPress={OnSignIn}>
+            Remember your credentials? Sign In
+          </TextButton>
+        </View>
       </ScreenRootView>
     </Screen>
   );

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, version, useContext} from 'react';
 
 import {
   TextHeader,
@@ -8,10 +8,27 @@ import {
   Button,
   Screen,
   ScreenRootView,
+  showError,
+  setBusy,
 } from '../components/ui';
 
+import auth from '@react-native-firebase/auth';
+
 export const LoginScreen = ({navigation}: any): React.ReactElement => {
-  const OnSignIn = () => null;
+  const [state, setState] = useState({email: '', password: ''});
+
+  const mergeState = (x: object) => setState((old) => ({...old, ...x}));
+
+  const OnSignIn = () => {
+    setBusy(true);
+    auth()
+      .signInWithEmailAndPassword(state.email, state.password)
+      .then(() => {})
+      .catch(showError)
+      .finally(() => {
+        setBusy(false);
+      });
+  };
   const OnSignInGoogle = () => null;
   const OnSignUp = () => navigation.navigate('SignUp');
   const OnForgotPassword = () => navigation.navigate('ForgotPassword');
@@ -21,8 +38,16 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
       <ScreenRootView>
         <View>
           <TextHeader title="Hello" sub="Sign in to your account" mb={4} />
-          <FullScreenInput placeholder="Email" icon="email-outline" mb={2} />
           <FullScreenInput
+            value={state.email}
+            onChangeText={(x: any) => mergeState({email: x})}
+            placeholder="Email"
+            icon="email-outline"
+            mb={2}
+          />
+          <FullScreenInput
+            value={state.password}
+            onChangeText={(x: any) => mergeState({password: x})}
             placeholder="Password"
             icon="eye-off"
             secureTextEntry={true}

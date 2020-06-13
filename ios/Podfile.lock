@@ -675,6 +675,8 @@ PODS:
     - React
   - RNScreens (2.8.0):
     - React
+  - RNSnackbar (2.2.2):
+    - React
   - RNSVG (12.1.0):
     - React
   - Yoga (1.14.0)
@@ -725,6 +727,7 @@ DEPENDENCIES:
   - "RNFBFunctions (from `../node_modules/@react-native-firebase/functions`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNSnackbar (from `../node_modules/react-native-snackbar`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -838,6 +841,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNSnackbar:
+    :path: "../node_modules/react-native-snackbar"
   RNSVG:
     :path: "../node_modules/react-native-svg"
   Yoga:
@@ -914,6 +919,7 @@ SPEC CHECKSUMS:
   RNFBFunctions: 709c2428f0ddd4b461af7eb39689a6b4270a950e
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNScreens: 62211832af51e0aebcf6e8c36bcf7dd65592f244
+  RNSnackbar: fb5ff4b809050c6af979e3d9c8bb1112a1eb740c
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a

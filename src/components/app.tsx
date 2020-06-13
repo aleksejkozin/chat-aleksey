@@ -6,8 +6,9 @@ import {EvaIconsPack} from '@ui-kitten/eva-icons';
 import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as eva from '@eva-design/eva';
+import {View} from '../components/ui';
 
-import {useTheme} from '@ui-kitten/components';
+import {useTheme, Spinner} from '@ui-kitten/components';
 
 import {HeaderIconButton} from '../components/ui';
 
@@ -63,11 +64,31 @@ export const UnauthorizedNavigator = (): React.ReactElement => (
   </Stack.Navigator>
 );
 
+const BusyOverlay = () => (
+  <View
+    style={{
+      position: 'absolute',
+      backgroundColor: 'rgba(0,0,0,0.7)',
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}>
+    <Spinner size="giant" />
+  </View>
+);
+
+export const AppContext = React.createContext({});
+
 const App = (): React.ReactElement => {
+  const [busy, setBusy] = useState(false);
   const [authorized, setAuthorized] = useState(false);
 
   return (
-    <React.Fragment>
+    <AppContext.Provider value={{setBusy: setBusy}}>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
         <ApplicationProvider {...eva} theme={eva.light}>
@@ -76,9 +97,10 @@ const App = (): React.ReactElement => {
               {authorized ? <AuthorizedNavigator /> : <UnauthorizedNavigator />}
             </NavigationContainer>
           </SafeAreaProvider>
+          {busy && <BusyOverlay />}
         </ApplicationProvider>
       </AppearanceProvider>
-    </React.Fragment>
+    </AppContext.Provider>
   );
 };
 

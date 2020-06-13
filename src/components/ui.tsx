@@ -1,12 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   Button as KittenButton,
   Input as KittenInput,
   Text as KittenText,
   CheckBox as KittenCheckBox,
   Layout as KittenLayout,
-} from '@ui-kitten/components';
-import {
   Icon,
   StyleService,
   useStyleSheet,
@@ -21,6 +19,8 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
 import moment from 'moment';
+import Snackbar from 'react-native-snackbar';
+import {AppContext} from '../components/app';
 
 var md5 = require('md5');
 
@@ -212,6 +212,21 @@ export const TextHeader = spacingWrapper(
     </View>
   ),
 );
+
+export const showError = (error: any): void => {
+  const theme = useTheme();
+  Snackbar.show({
+    text: error.toString(),
+    textColor: theme['text-danger-color'],
+    backgroundColor: theme['border-danger-color-5'],
+    duration: Snackbar.LENGTH_LONG,
+  });
+};
+
+export const setBusy = (x: boolean) => {
+  const {setBusy} = useContext<any>(AppContext);
+  setBusy(x);
+};
 
 export const HeaderIconButton = ({name, color, ...props}: any) => {
   const styles = useStyleSheet(themedStyles);

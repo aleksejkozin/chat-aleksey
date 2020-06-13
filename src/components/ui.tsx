@@ -112,6 +112,10 @@ export const SquareButton = spacingWrapper(
   },
 );
 
+export const Text = spacingWrapper(({children, ...props}: any) => (
+  <KittenText {...props}>{children}</KittenText>
+));
+
 export const TextButton = spacingWrapper(({children, ...props}: any) => (
   <KittenButton {...props} status="control" appearance="ghost">
     {children}

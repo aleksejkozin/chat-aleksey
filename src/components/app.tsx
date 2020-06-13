@@ -7,6 +7,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as eva from '@eva-design/eva';
 
+import {useTheme} from '@ui-kitten/components';
+
+import {HeaderIconButton} from '../components/ui';
+
 import {LoginScreen} from '../screens/login';
 import {SignUpScreen} from '../screens/signup';
 import {ForgotPasswordScreen} from '../screens/forgot-password';
@@ -24,12 +28,27 @@ const navigatorTheme = {
 
 const Stack = createStackNavigator();
 
-export const AuthorizedNavigator = (): React.ReactElement => (
-  <Stack.Navigator headerMode="float">
-    <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="Settings" component={SettingsScreen} />
-  </Stack.Navigator>
-);
+export const AuthorizedNavigator = (): React.ReactElement => {
+  const theme = useTheme();
+  return (
+    <Stack.Navigator
+      headerMode="float"
+      screenOptions={{
+        headerTintColor: theme['text-basic-color'],
+      }}>
+      <Stack.Screen
+        name="Chat"
+        component={ChatScreen}
+        options={{
+          headerRight: () => (
+            <HeaderIconButton name="settings-2-outline" onPress={() => null} />
+          ),
+        }}
+      />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+};
 
 export const UnauthorizedNavigator = (): React.ReactElement => (
   <Stack.Navigator headerMode="none">

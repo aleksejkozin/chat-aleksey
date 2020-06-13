@@ -6,7 +6,12 @@ import {
   CheckBox as KittenCheckBox,
   Layout as KittenLayout,
 } from '@ui-kitten/components';
-import {Icon, StyleService, useStyleSheet} from '@ui-kitten/components';
+import {
+  Icon,
+  StyleService,
+  useStyleSheet,
+  useTheme,
+} from '@ui-kitten/components';
 import {
   View as NativeView,
   StyleSheet,
@@ -202,6 +207,22 @@ export const TextHeader = spacingWrapper(
   ),
 );
 
+export const HeaderIconButton = ({name, ...props}: any) => {
+  const styles = useStyleSheet(themedStyles);
+  const theme = useTheme();
+  return (
+    <View style={styles.headerIconView} mr={1} ml={1}>
+      <KittenButton
+        {...props}
+        status="basic"
+        appearance="ghost"
+        style={{width: applySpace(1), height: applySpace(1)}}
+        accessoryLeft={UIIcon(name, theme['text-basic-color'])}
+      />
+    </View>
+  );
+};
+
 export const ScreenRootView = (props: any) => (
   <View p={1} style={{flex: 1, justifyContent: 'space-between'}} {...props} />
 );
@@ -257,6 +278,12 @@ export const Screen = ({
 };
 
 const themedStyles = StyleService.create({
+  headerIconView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
   chatMessage: {
     flexDirection: 'row',
     alignItems: 'center',

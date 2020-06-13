@@ -39,11 +39,15 @@ export const AuthorizedNavigator = (): React.ReactElement => {
       <Stack.Screen
         name="Chat"
         component={ChatScreen}
-        options={{
-          headerRight: () => (
-            <HeaderIconButton name="settings-2-outline" onPress={() => null} />
+        options={({navigation}: any) => ({
+          headerRight: ({tintColor}: any) => (
+            <HeaderIconButton
+              name="settings-2-outline"
+              color={tintColor}
+              onPress={() => navigation.navigate('Settings')}
+            />
           ),
-        }}
+        })}
       />
       <Stack.Screen name="Settings" component={SettingsScreen} />
     </Stack.Navigator>

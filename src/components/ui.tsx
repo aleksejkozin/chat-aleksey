@@ -207,9 +207,8 @@ export const TextHeader = spacingWrapper(
   ),
 );
 
-export const HeaderIconButton = ({name, ...props}: any) => {
+export const HeaderIconButton = ({name, color, ...props}: any) => {
   const styles = useStyleSheet(themedStyles);
-  const theme = useTheme();
   return (
     <View style={styles.headerIconView} mr={1} ml={1}>
       <KittenButton
@@ -217,7 +216,7 @@ export const HeaderIconButton = ({name, ...props}: any) => {
         status="basic"
         appearance="ghost"
         style={{width: applySpace(1), height: applySpace(1)}}
-        accessoryLeft={UIIcon(name, theme['text-basic-color'])}
+        accessoryLeft={UIIcon(name, color)}
       />
     </View>
   );

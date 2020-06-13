@@ -20,7 +20,7 @@ export const SignUpScreen = ({navigation}: any): React.ReactElement => {
   return (
     <Screen
       image={require('../assets/images/road-nea-mountains.jpg')}
-      overlay="rgba(0, 0, 0, 0.2)">
+      overlay="rgba(0, 0, 0, 0.15)">
       <ScreenRootView>
         <View>
           <TextHeader title="Sign Up" mb={2} />

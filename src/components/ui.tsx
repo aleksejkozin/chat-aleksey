@@ -56,7 +56,7 @@ const spacingWrapper = (Comp: any) => ({
   />
 );
 
-const UIIcon = (name: string, color = '') => (style: any): any =>
+export const UIIcon = (name: string, color = '') => (style: any): any =>
   name ? (
     <Icon {...(color ? {fill: color} : {})} {...style} name={name} />
   ) : null;
@@ -241,7 +241,9 @@ export const Screen = ({
     );
   } else {
     return (
-      <SafeAreaView style={{flex: 1, ...style}}>
+      <SafeAreaView
+        edges={['bottom', 'left', 'right']}
+        style={{flex: 1, ...style}}>
         <ImageBackground source={image} style={{flex: 1}}>
           <NativeView
             style={[StyleSheet.absoluteFill, {backgroundColor: overlay}]}

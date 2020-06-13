@@ -2,6 +2,7 @@ import React from 'react';
 import {KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {StyleService, useStyleSheet} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useHeaderHeight } from '@react-navigation/stack';
 
 import {
   Input,
@@ -14,7 +15,7 @@ import {
 
 export const ChatScreen = (props: any): React.ReactElement => {
   const styles = useStyleSheet(themedStyles);
-  const insets = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
   const messages = [
     {
       text: 'Awesome!',
@@ -43,7 +44,7 @@ export const ChatScreen = (props: any): React.ReactElement => {
       overlay={styles.overlay.backgroundColor + 'DD'}>
       <KeyboardAvoidingView
         style={{flex: 1}}
-        keyboardVerticalOffset={insets.top}
+        keyboardVerticalOffset={headerHeight}
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
         <View style={{flex: 1}} pl={1} pr={1}>
           <FlatList

@@ -11,6 +11,7 @@ import {LoginScreen} from '../screens/login';
 import {SignUpScreen} from '../screens/signup';
 import {ForgotPasswordScreen} from '../screens/forgot-password';
 import {ChatScreen} from '../screens/chat';
+import {SettingsScreen} from '../screens/settings';
 
 const navigatorTheme = {
   ...DefaultTheme,
@@ -24,8 +25,9 @@ const navigatorTheme = {
 const Stack = createStackNavigator();
 
 export const AuthorizedNavigator = (): React.ReactElement => (
-  <Stack.Navigator headerMode="none">
+  <Stack.Navigator headerMode="float">
     <Stack.Screen name="Chat" component={ChatScreen} />
+    <Stack.Screen name="Settings" component={SettingsScreen} />
   </Stack.Navigator>
 );
 
@@ -39,7 +41,7 @@ export const UnauthorizedNavigator = (): React.ReactElement => (
 );
 
 const App = (): React.ReactElement => {
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState(true);
 
   return (
     <React.Fragment>

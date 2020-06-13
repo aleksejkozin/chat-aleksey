@@ -64,7 +64,7 @@ export const UnauthorizedNavigator = (): React.ReactElement => (
 );
 
 const App = (): React.ReactElement => {
-  const [authorized, setAuthorized] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
 
   return (
     <React.Fragment>

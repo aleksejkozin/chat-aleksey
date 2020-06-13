@@ -14,7 +14,7 @@ import {
 
 export const SignUpScreen = ({navigation}: any): React.ReactElement => {
   const OnSignIn = () => navigation.navigate('Login');
-  const OnRigisterFacebook = () => null;
+  const OnRigisterGoogle = () => null;
   const OnSignUp = () => null;
 
   return (
@@ -37,8 +37,8 @@ export const SignUpScreen = ({navigation}: any): React.ReactElement => {
           <Button onPress={OnSignUp} mb={2}>
             SIGN UP
           </Button>
-          <Button onPress={OnRigisterFacebook} mb={4} icon="facebook">
-            REGISTER USING FACEBOOK
+          <Button onPress={OnRigisterGoogle} mb={4} icon="google">
+            REGISTER USING GOOGLE
           </Button>
           <TextButton onPress={OnSignIn}>
             Alreade have account? Sign In

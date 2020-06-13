@@ -96,6 +96,8 @@ export const SquareButton = spacingWrapper(
     style: any;
   }) => {
     const styles = useStyleSheet(themedStyles);
+    const theme = useTheme();
+
     return (
       <KittenButton
         {...props}
@@ -105,7 +107,7 @@ export const SquareButton = spacingWrapper(
           styles.squareButton,
           {width: applySpace(size), height: applySpace(size)},
         ]}
-        accessoryLeft={UIIcon(icon, styles.squareButton.color)}>
+        accessoryLeft={UIIcon(icon, theme['color-primary-600'])}>
         {children}
       </KittenButton>
     );
@@ -311,7 +313,6 @@ const themedStyles = StyleService.create({
   squareButton: {
     backgroundColor: 'background-basic-color-2',
     borderColor: 'background-basic-color-4',
-    color: 'color-primary-600',
   },
   time: {
     color: 'text-hint-color',

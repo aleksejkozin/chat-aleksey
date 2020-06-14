@@ -24,10 +24,13 @@ exports.sendMessage = functions.https.onCall(async (data, context) => {
     );
   }
 
+  const userInfo = await admin.auth().getUser(uid);
+
   await db.collection('messages').add({
     uid: uid,
     message: message,
     createdAt: currentTime,
+    name: userInfo.displayName || 'Unknown',
   });
 
   return {

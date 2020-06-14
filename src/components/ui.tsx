@@ -132,7 +132,7 @@ export const FullScreenInput = (props: any) => (
   <Input status="control" {...props} />
 );
 
-const ChatMessageName = spacingWrapper(({name, ...props}: any) => (
+const ChatMessageName = spacingWrapper(({name='Unknown', ...props}: any) => (
   <KittenText
     {...props}
     style={{fontWeight: 'bold', color: '#' + md5(name).substring(0, 6)}}>

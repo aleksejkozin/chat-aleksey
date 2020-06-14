@@ -33,7 +33,14 @@ export const SignUpScreen = ({navigation}: any): React.ReactElement => {
     setBusy(true);
     auth()
       .createUserWithEmailAndPassword(state.email, state.password)
-      .then(() => console.log('User account created & signed in!'))
+      .then((credentials) =>
+        credentials.user
+          .updateProfile({
+            displayName: state.username,
+          })
+          .then(() => console.log('User created'))
+          .catch(showError(theme)),
+      )
       .catch(showError(theme))
       .finally(() => {
         setBusy(false);

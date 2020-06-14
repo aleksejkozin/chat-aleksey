@@ -1,5 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {KeyboardAvoidingView, Platform, FlatList} from 'react-native';
+import {KeyboardAvoidingView, Platform, FlatList, Keyboard} from 'react-native';
 import {StyleService, useStyleSheet} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useHeaderHeight} from '@react-navigation/stack';
@@ -31,6 +31,7 @@ export const ChatScreen = (): React.ReactElement => {
   const onSendMessage = () => {
     if (newMessage.length > 0) {
       // functions().useFunctionsEmulator('http://localhost:5001');
+      Keyboard.dismiss();
       setBusy(true);
       functions()
         .httpsCallable('sendMessage')({message: newMessage})
@@ -73,11 +74,12 @@ export const ChatScreen = (): React.ReactElement => {
             data={messages}
             inverted={true}
             showsVerticalScrollIndicator={false}
-            renderItem={({item: {message, uid, createdAt}}) => (
+            renderItem={({item: {message, uid, name, createdAt}}) => (
               <ChatMessage
                 text={message}
                 time={createdAt.toDate()}
                 mine={uid === user.uid}
+                name={name}
               />
             )}
             keyExtractor={(x) => x.id}
@@ -86,6 +88,7 @@ export const ChatScreen = (): React.ReactElement => {
         <Layout p={1} style={styles.bottom}>
           <Input
             value={newMessage}
+            multiline={true}
             onChangeText={(x: any) => setNewMessage(x)}
             style={{flex: 1}}
             placeholder="Message..."

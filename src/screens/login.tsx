@@ -14,7 +14,20 @@ import {
 import {useTheme} from '@ui-kitten/components';
 import {AppContext} from '../components/app';
 import {useStateWithMerge} from '../common';
+
 import auth from '@react-native-firebase/auth';
+import {GoogleSignin} from '@react-native-community/google-signin';
+
+async function onGoogleButtonPress() {
+  // Get the users ID token
+  const {idToken} = await GoogleSignin.signIn();
+
+  // Create a Google credential with the token
+  const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+  // Sign-in the user with the credential
+  return auth().signInWithCredential(googleCredential);
+}
 
 export const LoginScreen = ({navigation}: any): React.ReactElement => {
   const theme = useTheme();
@@ -28,13 +41,25 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
     setBusy(true);
     auth()
       .signInWithEmailAndPassword(state.email, state.password)
-      .then(() => {})
+      .then(() => console.log('Signed in with Email!'))
       .catch(showError(theme))
       .finally(() => {
         setBusy(false);
       });
   };
-  const OnSignInGoogle = () => null;
+  const OnSignInGoogle = () => {
+    GoogleSignin.configure({
+      webClientId:
+        '553302981700-0il94gqco9bir4revf4o3ap6ko4ej4sf.apps.googleusercontent.com',
+    });
+    setBusy(true);
+    onGoogleButtonPress()
+      .then(() => console.log('Signed in with Google!'))
+      .catch(showError(theme))
+      .finally(() => {
+        setBusy(false);
+      });
+  };
   const OnSignUp = () => navigation.navigate('SignUp');
   const OnForgotPassword = () => navigation.navigate('ForgotPassword');
 

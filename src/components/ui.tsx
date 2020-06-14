@@ -20,7 +20,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
 import moment from 'moment';
 import Snackbar from 'react-native-snackbar';
-import {AppContext} from '../components/app';
+
 
 var md5 = require('md5');
 
@@ -213,19 +213,13 @@ export const TextHeader = spacingWrapper(
   ),
 );
 
-export const showError = (error: any): void => {
-  const theme = useTheme();
+export const showError = (theme: any) => (error: any): void => {
   Snackbar.show({
     text: error.toString(),
     textColor: theme['text-danger-color'],
     backgroundColor: theme['border-danger-color-5'],
-    duration: Snackbar.LENGTH_LONG,
+    duration: Snackbar.LENGTH_SHORT,
   });
-};
-
-export const setBusy = (x: boolean) => {
-  const {setBusy} = useContext<any>(AppContext);
-  setBusy(x);
 };
 
 export const HeaderIconButton = ({name, color, ...props}: any) => {

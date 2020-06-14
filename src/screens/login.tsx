@@ -1,4 +1,4 @@
-import React, {useState, version, useContext} from 'react';
+import React, {useContext} from 'react';
 
 import {
   TextHeader,
@@ -9,22 +9,27 @@ import {
   Screen,
   ScreenRootView,
   showError,
-  setBusy,
 } from '../components/ui';
 
+import {useTheme} from '@ui-kitten/components';
+import {AppContext} from '../components/app';
+import {useStateWithMerge} from '../common';
 import auth from '@react-native-firebase/auth';
 
 export const LoginScreen = ({navigation}: any): React.ReactElement => {
-  const [state, setState] = useState({email: '', password: ''});
-
-  const mergeState = (x: object) => setState((old) => ({...old, ...x}));
+  const theme = useTheme();
+  const {setBusy} = useContext<any>(AppContext);
+  const [state, _, mergeState] = useStateWithMerge({
+    email: '',
+    password: '',
+  });
 
   const OnSignIn = () => {
     setBusy(true);
     auth()
       .signInWithEmailAndPassword(state.email, state.password)
       .then(() => {})
-      .catch(showError)
+      .catch(showError(theme))
       .finally(() => {
         setBusy(false);
       });
@@ -42,6 +47,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
             value={state.email}
             onChangeText={(x: any) => mergeState({email: x})}
             placeholder="Email"
+            autoCapitalize="none"
             icon="email-outline"
             mb={2}
           />
@@ -49,6 +55,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
             value={state.password}
             onChangeText={(x: any) => mergeState({password: x})}
             placeholder="Password"
+            autoCapitalize="none"
             icon="eye-off"
             secureTextEntry={true}
           />

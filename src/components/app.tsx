@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {AppearanceProvider} from 'react-native-appearance';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {ApplicationProvider, IconRegistry, Text} from '@ui-kitten/components';
@@ -18,6 +18,8 @@ import {ForgotPasswordScreen} from '../screens/forgot-password';
 import {ChatScreen} from '../screens/chat';
 import {SettingsScreen} from '../screens/settings';
 
+import auth from '@react-native-firebase/auth';
+
 const navigatorTheme = {
   ...DefaultTheme,
   colors: {
@@ -29,40 +31,44 @@ const navigatorTheme = {
 
 const Stack = createStackNavigator();
 
-export const AuthorizedNavigator = (): React.ReactElement => {
+const Navigator = ({authorized}: any) => {
   const theme = useTheme();
   return (
     <Stack.Navigator
-      headerMode="float"
+      headerMode={authorized ? 'float' : 'none'}
       screenOptions={{
         headerTintColor: theme['text-basic-color'],
       }}>
-      <Stack.Screen
-        name="Chat"
-        component={ChatScreen}
-        options={({navigation}: any) => ({
-          headerRight: ({tintColor}: any) => (
-            <HeaderIconButton
-              name="settings-2-outline"
-              color={tintColor}
-              onPress={() => navigation.navigate('Settings')}
-            />
-          ),
-        })}
-      />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
+      {authorized ? (
+        <>
+          <Stack.Screen
+            name="Chat"
+            component={ChatScreen}
+            options={({navigation}: any) => ({
+              headerRight: ({tintColor}: any) => (
+                <HeaderIconButton
+                  name="settings-2-outline"
+                  color={tintColor}
+                  onPress={() => navigation.navigate('Settings')}
+                />
+              ),
+            })}
+          />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen
+            name="ForgotPassword"
+            component={ForgotPasswordScreen}
+          />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+        </>
+      )}
     </Stack.Navigator>
   );
 };
-
-export const UnauthorizedNavigator = (): React.ReactElement => (
-  <Stack.Navigator headerMode="none">
-    <Stack.Screen name="Login" component={LoginScreen} />
-    <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-    <Stack.Screen name="SignUp" component={SignUpScreen} />
-  </Stack.Navigator>
-);
 
 const BusyOverlay = () => (
   <View
@@ -84,17 +90,32 @@ const BusyOverlay = () => (
 export const AppContext = React.createContext({});
 
 const App = (): React.ReactElement => {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+
+  function onAuthStateChanged(user: any) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
+
+  useEffect(() => {
+    return auth().onAuthStateChanged(onAuthStateChanged);
+  }, []);
+
+  if (initializing) {
+    return <React.Fragment />;
+  }
 
   return (
-    <AppContext.Provider value={{setBusy: setBusy}}>
+    <AppContext.Provider
+      value={{setBusy: setBusy, user: user, setUser: setUser}}>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
         <ApplicationProvider {...eva} theme={eva.light}>
           <SafeAreaProvider>
             <NavigationContainer theme={navigatorTheme}>
-              {authorized ? <AuthorizedNavigator /> : <UnauthorizedNavigator />}
+              <Navigator authorized={user} />
             </NavigationContainer>
           </SafeAreaProvider>
           {busy && <BusyOverlay />}

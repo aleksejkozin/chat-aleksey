@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Toggle, Divider, useTheme} from '@ui-kitten/components';
 
-import {View, Screen, Layout, Button, Text} from '../components/ui';
+import {View, Screen, Layout, Button, Text, showError} from '../components/ui';
+import auth from '@react-native-firebase/auth';
+import {AppContext} from '../components/app';
 
 const Setting = ({title, children, onPress}: any) => (
   <View>
@@ -23,10 +25,17 @@ const Setting = ({title, children, onPress}: any) => (
 );
 
 export const SettingsScreen = (props: any): React.ReactElement => {
-  const [darkMode, setDarkMode] = useState(false);
-  const onDarkMode = () => setDarkMode(!darkMode);
-
   const theme = useTheme();
+  const {setBusy, setUser} = useContext<any>(AppContext);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const onDarkMode = () => setDarkMode(!darkMode);
+  const onLogOut = () => {
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'))
+      .catch(showError(theme));
+  };
 
   return (
     <Screen fullscreen={false} overlay={theme['border-basic-color-5']}>
@@ -34,7 +43,7 @@ export const SettingsScreen = (props: any): React.ReactElement => {
         <Setting title="Dark mode" onPress={onDarkMode}>
           <Toggle checked={darkMode} onChange={onDarkMode} />
         </Setting>
-        <Button>LOG OUT</Button>
+        <Button onPress={onLogOut}>LOG OUT</Button>
       </View>
     </Screen>
   );

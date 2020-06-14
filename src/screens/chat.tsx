@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {StyleService, useStyleSheet} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import { useHeaderHeight } from '@react-navigation/stack';
+import {useHeaderHeight} from '@react-navigation/stack';
+import {AppContext} from '../components/app';
 
 import {
   Input,
@@ -14,6 +15,7 @@ import {
 } from '../components/ui';
 
 export const ChatScreen = (props: any): React.ReactElement => {
+  const {setBusy, setUser} = useContext<any>(AppContext);
   const styles = useStyleSheet(themedStyles);
   const headerHeight = useHeaderHeight();
   const messages = [

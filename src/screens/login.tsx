@@ -48,11 +48,11 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
       });
   };
   const OnSignInGoogle = () => {
+    setBusy(true);
     GoogleSignin.configure({
       webClientId:
         '553302981700-0il94gqco9bir4revf4o3ap6ko4ej4sf.apps.googleusercontent.com',
     });
-    setBusy(true);
     onGoogleButtonPress()
       .then(() => console.log('Signed in with Google!'))
       .catch(showError(theme))

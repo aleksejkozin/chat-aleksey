@@ -15,7 +15,7 @@ import {
 } from '../components/ui';
 
 export const ChatScreen = (props: any): React.ReactElement => {
-  const {setBusy, setUser} = useContext<any>(AppContext);
+  const {setBusy, user} = useContext<any>(AppContext);
   const styles = useStyleSheet(themedStyles);
   const headerHeight = useHeaderHeight();
   const messages = [

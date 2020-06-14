@@ -109,7 +109,7 @@ const App = (): React.ReactElement => {
 
   return (
     <AppContext.Provider
-      value={{setBusy: setBusy, user: user, setUser: setUser}}>
+      value={{setBusy: setBusy, user: user}}>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
         <ApplicationProvider {...eva} theme={eva.light}>

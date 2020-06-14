@@ -8,7 +8,9 @@
     "pod": "cd ./ios && pod install",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "emulator": "cd ./functions && npm run serve",
+    "deploy": "firebase deploy"
   },
   "dependencies": {
     "@eva-design/eva": "2.0.0",

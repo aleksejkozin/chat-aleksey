@@ -39,8 +39,6 @@ export const SettingsScreen = (props: any): React.ReactElement => {
       .catch(showError(theme));
   };
 
-  console.log(user);
-
   return (
     <Screen fullscreen={false} overlay={theme['border-basic-color-5']}>
       <View style={{flex: 1, justifyContent: 'space-between'}}>
@@ -50,7 +48,7 @@ export const SettingsScreen = (props: any): React.ReactElement => {
         <View>
           <View mb={1} style={{alignItems: 'center'}}>
             <Text>Logged in as</Text>
-            <Text>{user.email}</Text>
+            <Text>{user && user.email}</Text>
             <Text>Version {getReadableVersion()}</Text>
           </View>
           <Button onPress={onLogOut}>LOG OUT</Button>

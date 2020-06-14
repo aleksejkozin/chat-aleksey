@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {StyleService, useStyleSheet} from '@ui-kitten/components';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -12,32 +12,52 @@ import {
   Screen,
   Layout,
   ChatMessage,
+  showError,
 } from '../components/ui';
 
-export const ChatScreen = (props: any): React.ReactElement => {
+import {useTheme} from '@ui-kitten/components';
+
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
+import functions from '@react-native-firebase/functions';
+
+export const ChatScreen = (): React.ReactElement => {
+  const theme = useTheme();
   const {setBusy, user} = useContext<any>(AppContext);
   const styles = useStyleSheet(themedStyles);
   const headerHeight = useHeaderHeight();
-  const messages = [
-    {
-      text: 'Awesome!',
-      name: 'JC Denton',
-      mine: true,
-      time: Date.now(),
-    },
-    {
-      name: 'Aleksey Kozin',
-      text: 'Sure!\nI can start right away!',
-      mine: false,
-      time: Date.now(),
-    },
-    {
-      name: 'JC Denton',
-      text: 'Hello, Aleksey,\nCould you make a cool app for me?',
-      mine: true,
-      time: Date.now(),
-    },
-  ];
+  const [newMessage, setNewMessage] = useState('');
+
+  const onSendMessage = () => {
+    if (newMessage.length > 0) {
+      // functions().useFunctionsEmulator('http://localhost:5001');
+      setBusy(true);
+      functions()
+        .httpsCallable('sendMessage')({message: newMessage})
+        .catch(showError(theme))
+        .then(() => setNewMessage(''))
+        .finally(() => setBusy(false));
+    }
+  };
+
+  const [messages, setMessages] = useState<any>([]);
+
+  useEffect(() => {
+    return firestore()
+      .collection('messages')
+      .orderBy('createdAt', 'desc')
+      .limit(20)
+      .onSnapshot((querySnapshot) => {
+        if (querySnapshot && querySnapshot.docs)
+          setMessages(
+            querySnapshot.docs.map((x) => ({
+              ...x.data(),
+              id: x.id,
+            })),
+          );
+      });
+  }, []);
+
   return (
     <Screen
       style={styles.screen}
@@ -53,13 +73,24 @@ export const ChatScreen = (props: any): React.ReactElement => {
             data={messages}
             inverted={true}
             showsVerticalScrollIndicator={false}
-            renderItem={({item: props}) => <ChatMessage {...props} />}
-            keyExtractor={(x) => x.text}
+            renderItem={({item: {message, uid, creaedAt}}) => (
+              <ChatMessage
+                text={message}
+                time={creaedAt}
+                mine={uid === user.uid}
+              />
+            )}
+            keyExtractor={(x) => x.id}
           />
         </View>
         <Layout p={1} style={styles.bottom}>
-          <Input style={{flex: 1}} placeholder="Message..." />
-          <SquareButton icon="paper-plane" ml={1} />
+          <Input
+            value={newMessage}
+            onChangeText={(x: any) => setNewMessage(x)}
+            style={{flex: 1}}
+            placeholder="Message..."
+          />
+          <SquareButton onPress={onSendMessage} icon="paper-plane" ml={1} />
         </Layout>
       </KeyboardAvoidingView>
     </Screen>

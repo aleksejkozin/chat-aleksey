@@ -73,10 +73,10 @@ export const ChatScreen = (): React.ReactElement => {
             data={messages}
             inverted={true}
             showsVerticalScrollIndicator={false}
-            renderItem={({item: {message, uid, creaedAt}}) => (
+            renderItem={({item: {message, uid, createdAt}}) => (
               <ChatMessage
                 text={message}
-                time={creaedAt}
+                time={createdAt.toDate()}
                 mine={uid === user.uid}
               />
             )}

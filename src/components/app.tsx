@@ -37,6 +37,9 @@ const Navigator = ({authorized}: any) => {
     <Stack.Navigator
       headerMode={authorized ? 'float' : 'none'}
       screenOptions={{
+        headerStyle: {
+          backgroundColor: theme['background-basic-color-1'],
+        },
         headerTintColor: theme['text-basic-color'],
       }}>
       {authorized ? (
@@ -93,6 +96,7 @@ const App = (): React.ReactElement => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);
+  const [dark, setDark] = useState(false);
 
   function onAuthStateChanged(user: any) {
     setUser(user);
@@ -109,10 +113,10 @@ const App = (): React.ReactElement => {
 
   return (
     <AppContext.Provider
-      value={{setBusy: setBusy, user: user}}>
+      value={{setBusy: setBusy, setDark: setDark, dark: dark, user: user}}>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
-        <ApplicationProvider {...eva} theme={eva.light}>
+        <ApplicationProvider {...eva} theme={dark ? eva.dark : eva.light}>
           <SafeAreaProvider>
             <NavigationContainer theme={navigatorTheme}>
               <Navigator authorized={user} />

@@ -1,12 +1,18 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {Toggle, Divider, useTheme} from '@ui-kitten/components';
+import {
+  Toggle,
+  Divider,
+  useTheme,
+  StyleService,
+  useStyleSheet,
+} from '@ui-kitten/components';
 
 import {View, Screen, Layout, Button, Text, showError} from '../components/ui';
 import auth from '@react-native-firebase/auth';
 import {AppContext} from '../components/app';
 
-import { getReadableVersion } from 'react-native-device-info'
+import {getReadableVersion} from 'react-native-device-info';
 
 const Setting = ({title, children, onPress}: any) => (
   <View>
@@ -28,10 +34,9 @@ const Setting = ({title, children, onPress}: any) => (
 
 export const SettingsScreen = (props: any): React.ReactElement => {
   const theme = useTheme();
-  const {setBusy, user} = useContext<any>(AppContext);
-  const [darkMode, setDarkMode] = useState(false);
-
-  const onDarkMode = () => setDarkMode(!darkMode);
+  const {dark, setDark, user} = useContext<any>(AppContext);
+  const styles = useStyleSheet(themedStyles);
+  const onDarkMode = () => setDark(!dark);
   const onLogOut = () => {
     auth()
       .signOut()
@@ -40,10 +45,13 @@ export const SettingsScreen = (props: any): React.ReactElement => {
   };
 
   return (
-    <Screen fullscreen={false} overlay={theme['border-basic-color-5']}>
+    <Screen
+      style={styles.screen}
+      fullscreen={false}
+      overlay={theme['border-basic-color-5']}>
       <View style={{flex: 1, justifyContent: 'space-between'}}>
         <Setting title="Dark mode" onPress={onDarkMode}>
-          <Toggle checked={darkMode} onChange={onDarkMode} />
+          <Toggle checked={dark} onChange={onDarkMode} />
         </Setting>
         <View>
           <View mb={1} style={{alignItems: 'center'}}>
@@ -57,3 +65,9 @@ export const SettingsScreen = (props: any): React.ReactElement => {
     </Screen>
   );
 };
+
+const themedStyles = StyleService.create({
+  screen: {
+    backgroundColor: 'background-basic-color-1',
+  },
+});

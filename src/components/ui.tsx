@@ -20,7 +20,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
 import moment from 'moment';
 import Snackbar from 'react-native-snackbar';
-
+import {AppContext} from '../components/app';
 
 var md5 = require('md5');
 
@@ -256,7 +256,9 @@ export const Screen = ({
   lightStatusBar?: boolean;
   overlay?: string;
 }) => {
-  const statusBar = lightStatusBar ? (
+  const {dark} = useContext<any>(AppContext);
+
+  const statusBar = lightStatusBar || dark ? (
     <StatusBar barStyle="light-content" />
   ) : (
     <StatusBar barStyle="dark-content" />

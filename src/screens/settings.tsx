@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {TouchableOpacity, AppState} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {
   Toggle,
   Divider,
@@ -13,7 +13,6 @@ import auth from '@react-native-firebase/auth';
 import {AppContext} from '../components/app';
 
 import {getReadableVersion} from 'react-native-device-info';
-import messaging from '@react-native-firebase/messaging';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -39,7 +38,9 @@ export const SettingsScreen = (props: any): React.ReactElement => {
   const [forceUpdate, setForceUpdate] = useState(0);
 
   const theme = useTheme();
-  const {dark, setDark, user} = useContext<any>(AppContext);
+  const {dark, setDark, user, notifications, setNotifications} = useContext<
+    any
+  >(AppContext);
   const styles = useStyleSheet(themedStyles);
   const onDarkMode = () => setDark(!dark);
   const onLogOut = () => {
@@ -49,59 +50,9 @@ export const SettingsScreen = (props: any): React.ReactElement => {
       .catch(showError(theme));
   };
 
-  const [notifications, setNotifications] = useState(false);
-
   const onNotifications = () => {
-    setNotifications((x) => !x);
+    setNotifications((x: boolean) => !x);
   };
-
-  const onAppStaetChange = (newState: any) => {
-    if (newState === 'active') {
-      setForceUpdate((x) => x + 1);
-    }
-  };
-
-  useEffect(() => {
-    AppState.addEventListener('change', onAppStaetChange);
-    return () => AppState.removeEventListener('change', onAppStaetChange);
-  }, []);
-
-  useEffect(() => {
-    async function wrapper() {
-      if (notifications) {
-        const authorizationStatus = await messaging().requestPermission();
-        switch (authorizationStatus) {
-          case messaging.AuthorizationStatus.AUTHORIZED:
-          case messaging.AuthorizationStatus.PROVISIONAL:
-            await messaging().registerDeviceForRemoteMessages();
-            console.log(`FCM Token: ${await messaging().getToken()}`);
-            break;
-          default:
-            setNotifications(false);
-            break;
-        }
-      } else {
-        await messaging().unregisterDeviceForRemoteMessages();
-      }
-    }
-    wrapper();
-  }, [notifications]);
-
-  useEffect(() => {
-    async function wrapper() {
-      const authorizationStatus = await messaging().hasPermission();
-      switch (authorizationStatus) {
-        case messaging.AuthorizationStatus.AUTHORIZED:
-        case messaging.AuthorizationStatus.PROVISIONAL:
-          if (!notifications) setNotifications(true);
-          break;
-        default:
-          if (notifications) setNotifications(false);
-          break;
-      }
-    }
-    wrapper();
-  }, [forceUpdate]);
 
   return (
     <Screen

@@ -7,6 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as eva from '@eva-design/eva';
 import {View} from '../components/ui';
+import {AppState} from 'react-native';
 
 import {useTheme, Spinner} from '@ui-kitten/components';
 
@@ -21,6 +22,7 @@ import {SettingsScreen} from '../screens/settings';
 import firestore from '@react-native-firebase/firestore';
 
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 
 const navigatorTheme = {
   ...DefaultTheme,
@@ -99,18 +101,74 @@ const App = (): React.ReactElement => {
   const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);
   const [dark, setDark] = useState(false);
+  const [notifications, setNotifications] = useState(false);
+
+  useEffect(() => {
+    async function wrapper() {
+      if (notifications) {
+        const authorizationStatus = await messaging().requestPermission();
+        switch (authorizationStatus) {
+          case messaging.AuthorizationStatus.AUTHORIZED:
+          case messaging.AuthorizationStatus.PROVISIONAL:
+            await messaging().registerDeviceForRemoteMessages();
+            console.log(`FCM Token: ${await messaging().getToken()}`);
+            break;
+          default:
+            setNotifications(false);
+            break;
+        }
+      } else {
+        await messaging().unregisterDeviceForRemoteMessages();
+      }
+    }
+    wrapper();
+  }, [notifications]);
+
+  const onAppStaetChange = (newState: any) => {
+    if (newState === 'active') {
+      async function wrapper() {
+        const authorizationStatus = await messaging().hasPermission();
+        switch (authorizationStatus) {
+          case messaging.AuthorizationStatus.AUTHORIZED:
+          case messaging.AuthorizationStatus.PROVISIONAL:
+            break;
+          default:
+            if (notifications) setNotifications(false);
+            break;
+        }
+      }
+      wrapper();
+    }
+  };
+
+  useEffect(() => {
+    AppState.addEventListener('change', onAppStaetChange);
+    return () => AppState.removeEventListener('change', onAppStaetChange);
+  }, [notifications]);
 
   useEffect(() => {
     async function wrapper() {
       if (!user || initializing) {
         return;
       }
-      await firestore().collection('users').doc(user.uid).set({
+      await firestore().collection('users').doc(user.uid).update({
         dark: dark,
       });
     }
     wrapper();
   }, [dark]);
+
+  useEffect(() => {
+    async function wrapper() {
+      if (!user || initializing) {
+        return;
+      }
+      await firestore().collection('users').doc(user.uid).update({
+        notifications: notifications,
+      });
+    }
+    wrapper();
+  }, [notifications]);
 
   useEffect(() => {
     if (!user) {
@@ -124,7 +182,12 @@ const App = (): React.ReactElement => {
           const userData = querySnapshot.data();
           if (initializing) setInitializing(false);
           console.log(userData);
-          setDark(userData.dark);
+          if ('dark' in userData) {
+            setDark(userData.dark);
+          }
+          if ('notifications' in userData) {
+            setNotifications(userData.notifications);
+          }
         }
       });
   }, [user]);
@@ -143,7 +206,14 @@ const App = (): React.ReactElement => {
 
   return (
     <AppContext.Provider
-      value={{setBusy: setBusy, setDark: setDark, dark: dark, user: user}}>
+      value={{
+        setBusy: setBusy,
+        setDark: setDark,
+        setNotifications: setNotifications,
+        notifications: notifications,
+        dark: dark,
+        user: user,
+      }}>
       <IconRegistry icons={[EvaIconsPack]} />
       <AppearanceProvider>
         <ApplicationProvider {...eva} theme={dark ? eva.dark : eva.light}>

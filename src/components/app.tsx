@@ -18,6 +18,8 @@ import {ForgotPasswordScreen} from '../screens/forgot-password';
 import {ChatScreen} from '../screens/chat';
 import {SettingsScreen} from '../screens/settings';
 
+import firestore from '@react-native-firebase/firestore';
+
 import auth from '@react-native-firebase/auth';
 
 const navigatorTheme = {
@@ -98,9 +100,37 @@ const App = (): React.ReactElement => {
   const [busy, setBusy] = useState(false);
   const [dark, setDark] = useState(false);
 
+  useEffect(() => {
+    async function wrapper() {
+      if (!user || initializing) {
+        return;
+      }
+      await firestore().collection('users').doc(user.uid).set({
+        dark: dark,
+      });
+    }
+    wrapper();
+  }, [dark]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    return firestore()
+      .collection('users')
+      .doc(user.uid)
+      .onSnapshot((querySnapshot) => {
+        if (querySnapshot) {
+          const userData = querySnapshot.data();
+          if (initializing) setInitializing(false);
+          console.log(userData);
+          setDark(userData.dark);
+        }
+      });
+  }, [user]);
+
   function onAuthStateChanged(user: any) {
     setUser(user);
-    if (initializing) setInitializing(false);
   }
 
   useEffect(() => {

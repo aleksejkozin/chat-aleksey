@@ -15,6 +15,8 @@ import {AppContext} from '../components/app';
 import {getReadableVersion} from 'react-native-device-info';
 import messaging from '@react-native-firebase/messaging';
 
+import firestore from '@react-native-firebase/firestore';
+
 const Setting = ({title, children, onPress}: any) => (
   <View>
     <TouchableOpacity onPress={onPress}>

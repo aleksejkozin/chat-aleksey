@@ -18,6 +18,7 @@ import {SignUpScreen} from '../screens/signup';
 import {ForgotPasswordScreen} from '../screens/forgot-password';
 import {ChatScreen} from '../screens/chat';
 import {SettingsScreen} from '../screens/settings';
+import {EnableNotifications} from '../screens/enable-notifications';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -72,6 +73,10 @@ const Navigator = ({authorized}: any) => {
             component={ForgotPasswordScreen}
           />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen
+            name="EnableNotifications"
+            component={EnableNotifications}
+          />
         </>
       )}
     </Stack.Navigator>
@@ -200,7 +205,6 @@ const App = (): React.ReactElement => {
         (querySnapshot) => {
           if (querySnapshot) {
             const userData = querySnapshot.data();
-            if (initializing) setInitializing(false);
             console.log(userData);
             if (userData) {
               if ('dark' in userData) {
@@ -211,6 +215,7 @@ const App = (): React.ReactElement => {
               }
             }
           }
+          if (initializing) setInitializing(false);
         },
         (error) => {
           if (initializing) setInitializing(false);
@@ -220,6 +225,9 @@ const App = (): React.ReactElement => {
 
   function onAuthStateChanged(user: any) {
     setUser(user);
+    if (!user) {
+      if (initializing) setInitializing(false);
+    }
   }
 
   useEffect(() => {

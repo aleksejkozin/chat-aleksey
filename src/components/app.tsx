@@ -7,7 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as eva from '@eva-design/eva';
 import {View} from '../components/ui';
-import {AppState} from 'react-native';
+import {AppState, Appearance} from 'react-native';
 
 import {useTheme, Spinner} from '@ui-kitten/components';
 
@@ -23,6 +23,7 @@ import firestore from '@react-native-firebase/firestore';
 
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import {getUniqueId} from 'react-native-device-info';
 
 const navigatorTheme = {
   ...DefaultTheme,
@@ -100,7 +101,7 @@ const App = (): React.ReactElement => {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(Appearance.getColorScheme() === 'dark');
   const [notifications, setNotifications] = useState(false);
 
   useEffect(() => {
@@ -151,9 +152,17 @@ const App = (): React.ReactElement => {
       if (!user || initializing) {
         return;
       }
-      await firestore().collection('users').doc(user.uid).update({
-        dark: dark,
-      });
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .collection('devices')
+        .doc(getUniqueId())
+        .set(
+          {
+            dark: dark,
+          },
+          {merge: true},
+        );
     }
     wrapper();
   }, [dark]);
@@ -163,9 +172,17 @@ const App = (): React.ReactElement => {
       if (!user || initializing) {
         return;
       }
-      await firestore().collection('users').doc(user.uid).update({
-        notifications: notifications,
-      });
+      await firestore()
+        .collection('users')
+        .doc(user.uid)
+        .collection('devices')
+        .doc(getUniqueId())
+        .set(
+          {
+            notifications: notifications,
+          },
+          {merge: true},
+        );
     }
     wrapper();
   }, [notifications]);
@@ -177,19 +194,28 @@ const App = (): React.ReactElement => {
     return firestore()
       .collection('users')
       .doc(user.uid)
-      .onSnapshot((querySnapshot) => {
-        if (querySnapshot) {
-          const userData = querySnapshot.data();
+      .collection('devices')
+      .doc(getUniqueId())
+      .onSnapshot(
+        (querySnapshot) => {
+          if (querySnapshot) {
+            const userData = querySnapshot.data();
+            if (initializing) setInitializing(false);
+            console.log(userData);
+            if (userData) {
+              if ('dark' in userData) {
+                setDark(userData.dark);
+              }
+              if ('notifications' in userData) {
+                setNotifications(userData.notifications);
+              }
+            }
+          }
+        },
+        (error) => {
           if (initializing) setInitializing(false);
-          console.log(userData);
-          if ('dark' in userData) {
-            setDark(userData.dark);
-          }
-          if ('notifications' in userData) {
-            setNotifications(userData.notifications);
-          }
-        }
-      });
+        },
+      );
   }, [user]);
 
   function onAuthStateChanged(user: any) {

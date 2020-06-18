@@ -1,0 +1,67 @@
+# 
+
+TEAM_ID = "5Z9R4HPE6N"
+USERNAME = "cirnotoss@gmail.com"
+APP_IDENTIFIER = "com.alekseykozin.chat"
+
+# 
+
+# before_all do
+#   ensure_git_branch
+#   ensure_git_status_clean
+#   git_pull
+# end
+
+platform :ios do
+    desc 'Fetch certificates and provisioning profiles'
+    lane :certificates do
+        register_devices(
+            team_id: TEAM_ID,
+            username: USERNAME,
+            devices: {
+                "Aleksey's iPhone 7" => "4c09eadc09b4d54f67586d8394ecc4624c25727d",
+                "Marina's iPhone SE" => "7ee6cd91f4946af9936f272b636824c488b07962",
+            },
+        )
+        match(
+            team_id: TEAM_ID,
+            username: USERNAME,
+            app_identifier: APP_IDENTIFIER,
+            type: 'development'
+        )
+        match(
+            team_id: TEAM_ID,
+            username: USERNAME,
+            app_identifier: APP_IDENTIFIER,
+            type: 'adhoc'
+        )
+        match(
+            team_id: TEAM_ID,
+            username: USERNAME,
+            app_identifier: APP_IDENTIFIER,
+            type: 'appstore'
+        )
+    end
+
+    desc 'Ship to testers on Firebase.'
+    lane :beta do
+        increment_build_number(
+            build_number: number_of_commits,
+            xcodeproj: "./ios/chatAleksey.xcodeproj",  
+        )
+        build_ios_app(
+            workspace: "./ios/chatAleksey.xcworkspace",
+            scheme: "chatAleksey",
+            configuration: "Release",
+            export_method: "ad-hoc",
+        )
+        firebase_app_distribution(
+            app: "1:553302981700:ios:03b61449b77af58eafd011",
+            groups: "general",
+        )
+    end
+end
+
+platform :android do
+  # Android Lanes
+end

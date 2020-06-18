@@ -66,6 +66,7 @@
 		502F2FDADA98FC5EA4E2C344 /* Pods-chatAleksey.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatAleksey.debug.xcconfig"; path = "Target Support Files/Pods-chatAleksey/Pods-chatAleksey.debug.xcconfig"; sourceTree = "<group>"; };
 		61A3AFE589D18B3A69742127 /* libPods-chatAleksey-chatAlekseyTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-chatAleksey-chatAlekseyTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		80AEC6F9249542BD00C0FB28 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		80AEC6FB249B9D8800C0FB28 /* chatAleksey.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = chatAleksey.entitlements; path = chatAleksey/chatAleksey.entitlements; sourceTree = "<group>"; };
 		8F4980556A4134446D524EF6 /* libPods-chatAleksey-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-chatAleksey-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D42023F0057AE363C4E3570 /* libPods-chatAleksey-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-chatAleksey-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB208DE837573F06EFBD19F0 /* Pods-chatAleksey-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-chatAleksey-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-chatAleksey-tvOSTests/Pods-chatAleksey-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -131,6 +132,7 @@
 		13B07FAE1A68108700A75B9A /* chatAleksey */ = {
 			isa = PBXGroup;
 			children = (
+				80AEC6FB249B9D8800C0FB28 /* chatAleksey.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -314,6 +316,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = 5Z9R4HPE6N;
 						LastSwiftMigration = 1120;
+						ProvisioningStyle = Manual;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -713,7 +716,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = chatAleksey/chatAleksey.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 5Z9R4HPE6N;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -729,6 +735,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alekseykozin.chat;
 				PRODUCT_NAME = chatAleksey;
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.alekseykozin.chat";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -741,10 +748,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = chatAleksey/chatAleksey.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 5Z9R4HPE6N;
 				INFOPLIST_FILE = chatAleksey/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -752,6 +763,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.alekseykozin.chat;
 				PRODUCT_NAME = chatAleksey;
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc com.alekseykozin.chat";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

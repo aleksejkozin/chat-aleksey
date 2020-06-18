@@ -1,5 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {TouchableOpacity} from 'react-native';
+import {TouchableOpacity, AppState} from 'react-native';
 import {
   Toggle,
   Divider,
@@ -13,6 +13,7 @@ import auth from '@react-native-firebase/auth';
 import {AppContext} from '../components/app';
 
 import {getReadableVersion} from 'react-native-device-info';
+import messaging from '@react-native-firebase/messaging';
 
 const Setting = ({title, children, onPress}: any) => (
   <View>
@@ -33,6 +34,8 @@ const Setting = ({title, children, onPress}: any) => (
 );
 
 export const SettingsScreen = (props: any): React.ReactElement => {
+  const [forceUpdate, setForceUpdate] = useState(0);
+
   const theme = useTheme();
   const {dark, setDark, user} = useContext<any>(AppContext);
   const styles = useStyleSheet(themedStyles);
@@ -44,15 +47,74 @@ export const SettingsScreen = (props: any): React.ReactElement => {
       .catch(showError(theme));
   };
 
+  const [notifications, setNotifications] = useState(false);
+
+  const onNotifications = () => {
+    setNotifications((x) => !x);
+  };
+
+  const onAppStaetChange = (newState: any) => {
+    if (newState === 'active') {
+      setForceUpdate((x) => x + 1);
+    }
+  };
+
+  useEffect(() => {
+    AppState.addEventListener('change', onAppStaetChange);
+    return () => AppState.removeEventListener('change', onAppStaetChange);
+  }, []);
+
+  useEffect(() => {
+    async function wrapper() {
+      if (notifications) {
+        const authorizationStatus = await messaging().requestPermission();
+        switch (authorizationStatus) {
+          case messaging.AuthorizationStatus.AUTHORIZED:
+          case messaging.AuthorizationStatus.PROVISIONAL:
+            await messaging().registerDeviceForRemoteMessages();
+            console.log(`FCM Token: ${await messaging().getToken()}`);
+            break;
+          default:
+            setNotifications(false);
+            break;
+        }
+      } else {
+        await messaging().unregisterDeviceForRemoteMessages();
+      }
+    }
+    wrapper();
+  }, [notifications]);
+
+  useEffect(() => {
+    async function wrapper() {
+      const authorizationStatus = await messaging().hasPermission();
+      switch (authorizationStatus) {
+        case messaging.AuthorizationStatus.AUTHORIZED:
+        case messaging.AuthorizationStatus.PROVISIONAL:
+          if (!notifications) setNotifications(true);
+          break;
+        default:
+          if (notifications) setNotifications(false);
+          break;
+      }
+    }
+    wrapper();
+  }, [forceUpdate]);
+
   return (
     <Screen
       style={styles.screen}
       fullscreen={false}
       overlay={theme['border-basic-color-5']}>
       <View style={{flex: 1, justifyContent: 'space-between'}}>
-        <Setting title="Dark mode" onPress={onDarkMode}>
-          <Toggle checked={dark} onChange={onDarkMode} />
-        </Setting>
+        <View>
+          <Setting title="Dark mode" onPress={onDarkMode}>
+            <Toggle checked={dark} onChange={onDarkMode} />
+          </Setting>
+          <Setting title="Notifications" onPress={onNotifications}>
+            <Toggle checked={notifications} onChange={onNotifications} />
+          </Setting>
+        </View>
         <View>
           <View mb={1} style={{alignItems: 'center'}}>
             <Text>Logged in as</Text>

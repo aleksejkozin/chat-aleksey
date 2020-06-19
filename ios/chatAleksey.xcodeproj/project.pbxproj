@@ -719,7 +719,7 @@
 				CODE_SIGN_ENTITLEMENTS = chatAleksey/chatAleksey.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = 5Z9R4HPE6N;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -751,7 +751,7 @@
 				CODE_SIGN_ENTITLEMENTS = chatAleksey/chatAleksey.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 30;
+				CURRENT_PROJECT_VERSION = 43;
 				DEVELOPMENT_TEAM = 5Z9R4HPE6N;
 				INFOPLIST_FILE = chatAleksey/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

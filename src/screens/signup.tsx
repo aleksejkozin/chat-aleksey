@@ -57,7 +57,7 @@ export const SignUpScreen = ({navigation}: any): React.ReactElement => {
           <FullScreenInput
             value={state.username}
             onChangeText={(x: any) => mergeState({username: x})}
-            placeholder="Usename"
+            placeholder="Username"
             icon="person"
             mb={2}
           />

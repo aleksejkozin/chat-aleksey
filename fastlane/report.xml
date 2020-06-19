@@ -5,22 +5,37 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: register_devices" time="5.529429">
+      <testcase classname="fastlane.lanes" name="0: ensure_git_branch" time="0.011231">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: match" time="29.20083">
+      <testcase classname="fastlane.lanes" name="1: ensure_git_status_clean" time="0.02078">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: match" time="31.062297">
+      <testcase classname="fastlane.lanes" name="2: git_pull" time="19.779925">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: match" time="26.807184">
+      <testcase classname="fastlane.lanes" name="3: number_of_commits" time="0.030334">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: increment_build_number" time="2.332533">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: build_ios_app" time="1848.159076">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: firebase_app_distribution" time="14.22799">
         
       </testcase>
     

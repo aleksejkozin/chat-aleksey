@@ -6,11 +6,11 @@ APP_IDENTIFIER = "com.alekseykozin.chat"
 
 # 
 
-# before_all do
-#   ensure_git_branch
-#   ensure_git_status_clean
-#   git_pull
-# end
+before_all do
+  ensure_git_branch
+  ensure_git_status_clean
+  git_pull
+end
 
 platform :ios do
     desc 'Fetch certificates and provisioning profiles'

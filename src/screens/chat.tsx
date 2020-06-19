@@ -15,7 +15,7 @@ import {
   showError,
 } from '../components/ui';
 
-import {useTheme} from '@ui-kitten/components';
+import {useTheme, Spinner} from '@ui-kitten/components';
 
 import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
@@ -41,7 +41,7 @@ export const ChatScreen = (): React.ReactElement => {
     }
   };
 
-  const [messages, setMessages] = useState<any>([]);
+  const [messages, setMessages] = useState<any>(undefined);
 
   useEffect(() => {
     return firestore()
@@ -70,22 +70,39 @@ export const ChatScreen = (): React.ReactElement => {
         keyboardVerticalOffset={headerHeight}
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
         <View style={{flex: 1}} pl={1} pr={1}>
-          <FlatList
-            data={messages}
-            inverted={true}
-            showsVerticalScrollIndicator={false}
-            renderItem={({item: {message, uid, name, createdAt}}) =>
-              user && (
-                <ChatMessage
-                  text={message}
-                  time={createdAt.toDate()}
-                  mine={uid === user.uid}
-                  name={name}
-                />
-              )
-            }
-            keyExtractor={(x) => x.id}
-          />
+          {typeof messages !== 'undefined' ? (
+            <FlatList
+              data={messages}
+              inverted={true}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item: {message, uid, name, createdAt}}) =>
+                user && (
+                  <ChatMessage
+                    text={message}
+                    time={createdAt.toDate()}
+                    mine={uid === user.uid}
+                    name={name}
+                  />
+                )
+              }
+              keyExtractor={(x) => x.id}
+            />
+          ) : (
+            <View
+              style={{
+                position: 'absolute',
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Spinner size="giant" />
+            </View>
+          )}
         </View>
         <Layout p={1} style={styles.bottom}>
           <Input

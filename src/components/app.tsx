@@ -46,14 +46,24 @@ export enum AppRoot {
 }
 
 const Navigator = ({root}: {root: AppRoot}) => {
+  const [trueRoot, setTrueRoot] = useState(AppRoot.Splash);
   const theme = useTheme();
 
-  if (root === AppRoot.Splash) {
-    return <Stack.Screen name="Splash" component={SplashScreen} />;
+  const SWITCH_ROOT_DELAY_FOR_SMOOTH_ANIMATION = 200;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setTrueRoot(root);
+    }, SWITCH_ROOT_DELAY_FOR_SMOOTH_ANIMATION);
+    return () => clearTimeout(timer);
+  }, [root]);
+
+  if (trueRoot === AppRoot.Splash) {
+    return <SplashScreen />;
   }
 
   const Payload = () => {
-    switch (root) {
+    switch (trueRoot) {
       case AppRoot.Chat:
         return (
           <>
@@ -86,12 +96,14 @@ const Navigator = ({root}: {root: AppRoot}) => {
         );
       case AppRoot.Onboarding:
         return <Stack.Screen name="Onboarding" component={OnboardingScreen} />;
+      default:
+        return <Stack.Screen name="Splash" component={SplashScreen} />;
     }
   };
 
   return (
     <Stack.Navigator
-      headerMode={root === AppRoot.Chat ? 'float' : 'none'}
+      headerMode={trueRoot === AppRoot.Chat ? 'float' : 'none'}
       screenOptions={{
         headerStyle: {
           backgroundColor: theme['background-basic-color-1'],
@@ -141,6 +153,8 @@ const useRemoteState = (user: any, name: string, initialValue: any) => {
         const userData = querySnapshot.data();
         if (userData && name in userData) {
           setValue(userData[name]);
+        } else {
+          setValue(undefined);
         }
       }
     });
@@ -233,9 +247,7 @@ const App = (): React.ReactElement => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      setRoot(AppRoot.Chat);
-    } else {
+    if (!user) {
       setRoot(AppRoot.Login);
     }
   }, [user]);

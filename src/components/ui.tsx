@@ -152,7 +152,7 @@ export const Setting = ({title, children, onPress}: any) => (
   </View>
 );
 
-const ChatMessageName = spacingWrapper(({name='Unknown', ...props}: any) => (
+const ChatMessageName = spacingWrapper(({name = 'Unknown', ...props}: any) => (
   <KittenText
     {...props}
     style={{fontWeight: 'bold', color: '#' + md5(name).substring(0, 6)}}>
@@ -223,14 +223,19 @@ export const Layout = spacingWrapper((props: any) => (
 ));
 
 export const TextHeader = spacingWrapper(
-  ({title, sub, ...props}: {title: string; sub: string}) => (
-    <View {...props}>
-      <View style={{alignItems: 'center'}}>
-        <TitleText mb={2}>{title}</TitleText>
-        <SubtitleText>{sub}</SubtitleText>
+  ({title, sub, ...props}: {title: string; sub: string}) => {
+    const styles = useStyleSheet(themedStyles);
+    return (
+      <View {...props}>
+        <View style={{alignItems: 'center'}}>
+          <TitleText style={styles.textHeaderColor} mb={2}>
+            {title}
+          </TitleText>
+          <SubtitleText style={styles.textHeaderColor}>{sub}</SubtitleText>
+        </View>
       </View>
-    </View>
-  ),
+    );
+  },
 );
 
 export const showError = (theme: any) => (error: any): void => {
@@ -278,11 +283,12 @@ export const Screen = ({
 }) => {
   const {dark} = useContext<any>(AppContext);
 
-  const statusBar = lightStatusBar || dark ? (
-    <StatusBar barStyle="light-content" />
-  ) : (
-    <StatusBar barStyle="dark-content" />
-  );
+  const statusBar =
+    lightStatusBar || dark ? (
+      <StatusBar barStyle="light-content" />
+    ) : (
+      <StatusBar barStyle="dark-content" />
+    );
 
   if (fullscreen) {
     return (
@@ -348,5 +354,8 @@ const themedStyles = StyleService.create({
   time: {
     color: 'text-hint-color',
     fontSize: 12,
+  },
+  textHeaderColor: {
+    color: 'white',
   },
 });

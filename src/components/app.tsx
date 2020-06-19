@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {AppearanceProvider} from 'react-native-appearance';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {ApplicationProvider, IconRegistry, Text} from '@ui-kitten/components';
@@ -18,7 +18,8 @@ import {SignUpScreen} from '../screens/signup';
 import {ForgotPasswordScreen} from '../screens/forgot-password';
 import {ChatScreen} from '../screens/chat';
 import {SettingsScreen} from '../screens/settings';
-import {EnableNotifications} from '../screens/enable-notifications';
+import {SplashScreen} from '../screens/splash';
+import {OnboardingScreen} from '../screens/onboarding';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -37,44 +38,67 @@ const navigatorTheme = {
 
 const Stack = createStackNavigator();
 
-const Navigator = ({authorized}: any) => {
+export enum AppRoot {
+  Splash,
+  Chat,
+  Onboarding,
+  Login,
+}
+
+const Navigator = ({root}: {root: AppRoot}) => {
   const theme = useTheme();
+
+  if (root === AppRoot.Splash) {
+    return <Stack.Screen name="Splash" component={SplashScreen} />;
+  }
+
+  const Payload = () => {
+    switch (root) {
+      case AppRoot.Chat:
+        return (
+          <>
+            <Stack.Screen
+              name="Chat"
+              component={ChatScreen}
+              options={({navigation}: any) => ({
+                headerRight: ({tintColor}: any) => (
+                  <HeaderIconButton
+                    name="settings-2-outline"
+                    color={tintColor}
+                    onPress={() => navigation.navigate('Settings')}
+                  />
+                ),
+              })}
+            />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+          </>
+        );
+      case AppRoot.Login:
+        return (
+          <>
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen
+              name="ForgotPassword"
+              component={ForgotPasswordScreen}
+            />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+          </>
+        );
+      case AppRoot.Onboarding:
+        return <Stack.Screen name="Onboarding" component={OnboardingScreen} />;
+    }
+  };
+
   return (
     <Stack.Navigator
-      headerMode={authorized ? 'float' : 'none'}
+      headerMode={root === AppRoot.Chat ? 'float' : 'none'}
       screenOptions={{
         headerStyle: {
           backgroundColor: theme['background-basic-color-1'],
         },
         headerTintColor: theme['text-basic-color'],
       }}>
-      {authorized ? (
-        <>
-          <Stack.Screen
-            name="Chat"
-            component={ChatScreen}
-            options={({navigation}: any) => ({
-              headerRight: ({tintColor}: any) => (
-                <HeaderIconButton
-                  name="settings-2-outline"
-                  color={tintColor}
-                  onPress={() => navigation.navigate('Settings')}
-                />
-              ),
-            })}
-          />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen
-            name="ForgotPassword"
-            component={ForgotPasswordScreen}
-          />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-        </>
-      )}
+      {Payload()}
     </Stack.Navigator>
   );
 };
@@ -98,12 +122,72 @@ const BusyOverlay = () => (
 
 export const AppContext = React.createContext({});
 
+const useRemoteState = (user: any, name: string, initialValue: any) => {
+  const [value, setValue] = useState(initialValue);
+
+  const settingsRoot = (user: any) =>
+    firestore()
+      .collection('users')
+      .doc(user.uid)
+      .collection('devices')
+      .doc(getUniqueId());
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+    return settingsRoot(user).onSnapshot((querySnapshot) => {
+      if (querySnapshot) {
+        const userData = querySnapshot.data();
+        if (userData && name in userData) {
+          setValue(userData[name]);
+        }
+      }
+    });
+  }, [user]);
+
+  useEffect(() => {
+    async function wrapper() {
+      if (!user) {
+        return;
+      }
+      await settingsRoot(user).set(
+        {
+          [name]: value,
+        },
+        {merge: true},
+      );
+    }
+    wrapper();
+  }, [value]);
+
+  return [value, setValue];
+};
+
 const App = (): React.ReactElement => {
-  const [initializing, setInitializing] = useState(true);
+  const [root, setRoot_] = useState(AppRoot.Splash);
   const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);
-  const [dark, setDark] = useState(Appearance.getColorScheme() === 'dark');
-  const [notifications, setNotifications] = useState(false);
+
+  const [onboardingFinished, setOnboardingFinished] = useRemoteState(
+    user,
+    'onboardingFinished',
+    false,
+  );
+  const [dark, setDark] = useRemoteState(
+    user,
+    'dark',
+    Appearance.getColorScheme() === 'dark',
+  );
+  const [notifications, setNotifications] = useRemoteState(
+    user,
+    'notifications',
+    false,
+  );
+
+  const setRoot = (x: AppRoot) => {
+    if (x !== root) setRoot_(x);
+  };
 
   useEffect(() => {
     async function wrapper() {
@@ -126,7 +210,7 @@ const App = (): React.ReactElement => {
     wrapper();
   }, [notifications]);
 
-  const onAppStaetChange = (newState: any) => {
+  const onAppStateChange = (newState: any) => {
     if (newState === 'active') {
       async function wrapper() {
         const authorizationStatus = await messaging().hasPermission();
@@ -135,7 +219,7 @@ const App = (): React.ReactElement => {
           case messaging.AuthorizationStatus.PROVISIONAL:
             break;
           default:
-            if (notifications) setNotifications(false);
+            setNotifications(false);
             break;
         }
       }
@@ -144,103 +228,41 @@ const App = (): React.ReactElement => {
   };
 
   useEffect(() => {
-    AppState.addEventListener('change', onAppStaetChange);
-    return () => AppState.removeEventListener('change', onAppStaetChange);
-  }, [notifications]);
-
-  useEffect(() => {
-    async function wrapper() {
-      if (!user || initializing) {
-        return;
-      }
-      await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('devices')
-        .doc(getUniqueId())
-        .set(
-          {
-            dark: dark,
-          },
-          {merge: true},
-        );
-    }
-    wrapper();
-  }, [dark]);
-
-  useEffect(() => {
-    async function wrapper() {
-      if (!user || initializing) {
-        return;
-      }
-      await firestore()
-        .collection('users')
-        .doc(user.uid)
-        .collection('devices')
-        .doc(getUniqueId())
-        .set(
-          {
-            notifications: notifications,
-          },
-          {merge: true},
-        );
-    }
-    wrapper();
-  }, [notifications]);
-
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-    return firestore()
-      .collection('users')
-      .doc(user.uid)
-      .collection('devices')
-      .doc(getUniqueId())
-      .onSnapshot(
-        (querySnapshot) => {
-          if (querySnapshot) {
-            const userData = querySnapshot.data();
-            console.log(userData);
-            if (userData) {
-              if ('dark' in userData) {
-                setDark(userData.dark);
-              }
-              if ('notifications' in userData) {
-                setNotifications(userData.notifications);
-              }
-            }
-          }
-          if (initializing) setInitializing(false);
-        },
-        (error) => {
-          if (initializing) setInitializing(false);
-        },
-      );
-  }, [user]);
-
-  function onAuthStateChanged(user: any) {
-    setUser(user);
-    if (!user) {
-      if (initializing) setInitializing(false);
-    }
-  }
-
-  useEffect(() => {
-    return auth().onAuthStateChanged(onAuthStateChanged);
+    AppState.addEventListener('change', onAppStateChange);
+    return () => AppState.removeEventListener('change', onAppStateChange);
   }, []);
 
-  if (initializing) {
-    return <React.Fragment />;
-  }
+  useEffect(() => {
+    if (user) {
+      setRoot(AppRoot.Chat);
+    } else {
+      setRoot(AppRoot.Login);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      if (onboardingFinished) {
+        setRoot(AppRoot.Chat);
+      } else {
+        setRoot(AppRoot.Onboarding);
+      }
+    }
+  }, [user, onboardingFinished]);
+
+  useEffect(() => {
+    return auth().onAuthStateChanged((user: any) => setUser(user));
+  }, []);
 
   return (
     <AppContext.Provider
       value={{
+        setRoot: setRoot,
         setBusy: setBusy,
         setDark: setDark,
         setNotifications: setNotifications,
         notifications: notifications,
+        setOnboardingFinished: setOnboardingFinished,
         dark: dark,
         user: user,
       }}>
@@ -249,7 +271,7 @@ const App = (): React.ReactElement => {
         <ApplicationProvider {...eva} theme={dark ? eva.dark : eva.light}>
           <SafeAreaProvider>
             <NavigationContainer theme={navigatorTheme}>
-              <Navigator authorized={user} />
+              <Navigator root={root} />
             </NavigationContainer>
           </SafeAreaProvider>
           {busy && <BusyOverlay />}

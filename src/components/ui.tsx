@@ -7,6 +7,7 @@ import {
   Layout as KittenLayout,
   Icon,
   StyleService,
+  Divider,
   useStyleSheet,
   useTheme,
 } from '@ui-kitten/components';
@@ -15,6 +16,7 @@ import {
   StyleSheet,
   ImageBackground,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import ChatBubbleTail from './chat-bubble-tail';
@@ -130,6 +132,24 @@ export const Input = spacingWrapper(({icon, ...props}: any) => {
 
 export const FullScreenInput = (props: any) => (
   <Input status="control" {...props} />
+);
+
+export const Setting = ({title, children, onPress}: any) => (
+  <View>
+    <TouchableOpacity onPress={onPress}>
+      <Layout
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+        p={1}>
+        <Text category="h6">{title}</Text>
+        {children}
+      </Layout>
+    </TouchableOpacity>
+    <Divider />
+  </View>
 );
 
 const ChatMessageName = spacingWrapper(({name='Unknown', ...props}: any) => (

@@ -1,38 +1,18 @@
 import React, {useState, useContext, useEffect} from 'react';
-import {TouchableOpacity} from 'react-native';
 import {
   Toggle,
-  Divider,
   useTheme,
   StyleService,
   useStyleSheet,
 } from '@ui-kitten/components';
 
-import {View, Screen, Layout, Button, Text, showError} from '../components/ui';
+import {View, Screen, Layout, Button, Text, showError, Setting} from '../components/ui';
 import auth from '@react-native-firebase/auth';
 import {AppContext} from '../components/app';
 
 import {getReadableVersion} from 'react-native-device-info';
 
 import firestore from '@react-native-firebase/firestore';
-
-const Setting = ({title, children, onPress}: any) => (
-  <View>
-    <TouchableOpacity onPress={onPress}>
-      <Layout
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-        p={1}>
-        <Text category="h6">{title}</Text>
-        {children}
-      </Layout>
-    </TouchableOpacity>
-    <Divider />
-  </View>
-);
 
 export const SettingsScreen = (props: any): React.ReactElement => {
   const [forceUpdate, setForceUpdate] = useState(0);

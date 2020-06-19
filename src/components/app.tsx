@@ -73,10 +73,6 @@ const Navigator = ({authorized}: any) => {
             component={ForgotPasswordScreen}
           />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen
-            name="EnableNotifications"
-            component={EnableNotifications}
-          />
         </>
       )}
     </Stack.Navigator>

@@ -272,7 +272,7 @@ export const Screen = ({
   style,
   fullscreen = true,
   lightStatusBar = false,
-  overlay = 'rgba(0, 0, 0, 0.50)',
+  overlay = 'rgba(0, 0, 0, 0.30)',
 }: {
   children?: any;
   image?: any;

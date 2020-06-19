@@ -6,7 +6,15 @@ import {
   useStyleSheet,
 } from '@ui-kitten/components';
 
-import {View, Screen, Layout, Button, Text, showError, Setting} from '../components/ui';
+import {
+  View,
+  Screen,
+  Layout,
+  Button,
+  Text,
+  showError,
+  Setting,
+} from '../components/ui';
 import auth from '@react-native-firebase/auth';
 import {AppContext} from '../components/app';
 
@@ -30,9 +38,7 @@ export const SettingsScreen = (props: any): React.ReactElement => {
       .catch(showError(theme));
   };
 
-  const onNotifications = () => {
-    setNotifications((x: boolean) => !x);
-  };
+  const onNotifications = () => setNotifications((x: boolean) => !x);
 
   return (
     <Screen

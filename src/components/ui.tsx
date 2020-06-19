@@ -144,7 +144,7 @@ export const Setting = ({title, children, onPress}: any) => (
           alignItems: 'center',
         }}
         p={1}>
-        <Text category="h6">{title}</Text>
+        <Text category="h6" mr={1}>{title}</Text>
         {children}
       </Layout>
     </TouchableOpacity>

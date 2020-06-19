@@ -3,6 +3,7 @@ import * as functions from 'firebase-functions';
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = admin.firestore();
+const messaging = admin.messaging();
 
 const currentTime = admin.firestore.FieldValue.serverTimestamp();
 
@@ -25,12 +26,33 @@ exports.sendMessage = functions.https.onCall(async (data, context) => {
   }
 
   const userInfo = await admin.auth().getUser(uid);
+  const userName = userInfo.displayName || 'Unknown';
 
   await db.collection('messages').add({
     uid: uid,
     message: message,
     createdAt: currentTime,
-    name: userInfo.displayName || 'Unknown',
+    name: userName,
+  });
+
+  await messaging.send({
+    topic: 'main',
+    notification: {
+      title: userName,
+      body: message,
+    },
+    android: {
+      notification: {
+        sound: 'default',
+      },
+    },
+    apns: {
+      payload: {
+        aps: {
+          sound: 'default',
+        },
+      },
+    },
   });
 
   return {

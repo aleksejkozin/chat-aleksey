@@ -46,10 +46,10 @@ export enum AppRoot {
 }
 
 const Navigator = ({root}: {root: AppRoot}) => {
+  const SWITCH_ROOT_DELAY_FOR_SMOOTH_ANIMATION = 300;
+
   const [trueRoot, setTrueRoot] = useState(AppRoot.Splash);
   const theme = useTheme();
-
-  const SWITCH_ROOT_DELAY_FOR_SMOOTH_ANIMATION = 200;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -71,6 +71,7 @@ const Navigator = ({root}: {root: AppRoot}) => {
               name="Chat"
               component={ChatScreen}
               options={({navigation}: any) => ({
+                headerTitle: 'Chat Aleksey',
                 headerRight: ({tintColor}: any) => (
                   <HeaderIconButton
                     name="settings-2-outline"
@@ -211,13 +212,14 @@ const App = (): React.ReactElement => {
           case messaging.AuthorizationStatus.AUTHORIZED:
           case messaging.AuthorizationStatus.PROVISIONAL:
             await messaging().registerDeviceForRemoteMessages();
-            console.log(`FCM Token: ${await messaging().getToken()}`);
+            await messaging().subscribeToTopic('main');
             break;
           default:
             setNotifications(false);
             break;
         }
       } else {
+        await messaging().unsubscribeFromTopic('main');
         await messaging().unregisterDeviceForRemoteMessages();
       }
     }

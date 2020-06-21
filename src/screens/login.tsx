@@ -69,6 +69,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
         <View>
           <TextHeader title="Hello" sub="Sign in to your account" mb={4} />
           <FullScreenInput
+            testID='Email'
             value={state.email}
             onChangeText={(x: any) => mergeState({email: x})}
             placeholder="Email"
@@ -77,6 +78,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
             mb={2}
           />
           <FullScreenInput
+            testID='Password'
             value={state.password}
             onChangeText={(x: any) => mergeState({password: x})}
             placeholder="Password"
@@ -91,7 +93,7 @@ export const LoginScreen = ({navigation}: any): React.ReactElement => {
           </View>
         </View>
         <View>
-          <Button onPress={OnSignIn} mb={2}>
+          <Button testID='SignInButton' onPress={OnSignIn} mb={2}>
             SIGN IN
           </Button>
           <Button onPress={OnSignInGoogle} mb={4} icon="google">

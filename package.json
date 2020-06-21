@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "emulator": "cd ./functions && npm run serve",
     "deploy": "firebase deploy",
-    "beta": "fastlane ios beta"
+    "beta": "fastlane ios beta",
+    "e2e": "detox test"
   },
   "dependencies": {
     "@eva-design/eva": "2.0.0",
@@ -52,6 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "@ui-kitten/metro-config": "5.0.0",
+    "axios": "^0.19.2",
     "babel-jest": "^24.9.0",
     "detox": "^16.8.2",
     "eslint": "^6.5.1",

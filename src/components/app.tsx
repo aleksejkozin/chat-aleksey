@@ -26,6 +26,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 import {getUniqueId} from 'react-native-device-info';
+import functions from '@react-native-firebase/functions';
 
 const navigatorTheme = {
   ...DefaultTheme,
@@ -179,7 +180,28 @@ const useRemoteState = (user: any, name: string, initialValue: any) => {
   return [value, setValue];
 };
 
-const App = (): React.ReactElement => {
+const App = () => {
+  const [ready, seReady] = useState(false);
+
+  useEffect(() => {
+    async function wrapper() {
+      if (__DEV__) {
+        functions().useFunctionsEmulator('http://localhost:5001');
+        await firestore().settings({
+          host: 'localhost:8080',
+          cacheSizeBytes: firestore.CACHE_SIZE_UNLIMITED,
+          ssl: false,
+          persistence: false,
+        });
+      }
+    }
+    wrapper().finally(() => seReady(true));
+  }, []);
+
+  return ready ? <App_ /> : null;
+};
+
+const App_ = (): React.ReactElement => {
   const [root, setRoot_] = useState(AppRoot.Splash);
   const [user, setUser] = useState();
   const [busy, setBusy] = useState(false);

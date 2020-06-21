@@ -7,6 +7,16 @@ const messaging = admin.messaging();
 
 const currentTime = admin.firestore.FieldValue.serverTimestamp();
 
+const usernameFrom = async (uid: any) => {
+  const UNKNOWN_NAME = 'Unknown';
+  try {
+    const userInfo = await admin.auth().getUser(uid);
+    return userInfo.displayName || UNKNOWN_NAME;
+  } catch {
+    return UNKNOWN_NAME;
+  }
+};
+
 exports.sendMessage = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError(
@@ -25,8 +35,7 @@ exports.sendMessage = functions.https.onCall(async (data, context) => {
     );
   }
 
-  const userInfo = await admin.auth().getUser(uid);
-  const userName = userInfo.displayName || 'Unknown';
+  const userName = usernameFrom(uid);
 
   await db.collection('messages').add({
     uid: uid,

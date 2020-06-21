@@ -30,7 +30,6 @@ export const ChatScreen = (): React.ReactElement => {
 
   const onSendMessage = () => {
     if (newMessage.length > 0) {
-      // functions().useFunctionsEmulator('http://localhost:5001');
       Keyboard.dismiss();
       setBusy(true);
       functions()

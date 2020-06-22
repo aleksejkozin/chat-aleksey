@@ -20,6 +20,7 @@ import {ChatScreen} from '../screens/chat';
 import {SettingsScreen} from '../screens/settings';
 import {SplashScreen} from '../screens/splash';
 import {OnboardingScreen} from '../screens/onboarding';
+import {MapScreen} from '../screens/map';
 
 import firestore from '@react-native-firebase/firestore';
 
@@ -88,6 +89,7 @@ const Navigator = ({root}: {root: AppRoot}) => {
       case AppRoot.Login:
         return (
           <>
+            <Stack.Screen name="Map" component={MapScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen
               name="ForgotPassword"

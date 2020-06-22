@@ -20,9 +20,12 @@ const waitUntillHTTP200 = async (url, n = 0, attempts = 20) => {
 describe('Chat app', () => {
   let backend;
 
-  beforeAll(() => {
+  beforeAll(async () => {
     backend = spawn('firebase', ['emulators:start']);
-    return waitUntillHTTP200('http://localhost:4000/');
+    await waitUntillHTTP200('http://localhost:4000/');
+
+    await device.resetContentAndSettings();
+    await device.relaunchApp({delete: true});
   });
 
   afterAll(() => {
@@ -31,7 +34,7 @@ describe('Chat app', () => {
   });
 
   beforeEach(async () => {
-    await device.relaunchApp({delete: true});
+    await device.launchApp({newInstance: true});
   });
 
   it('should allow user to login', async () => {

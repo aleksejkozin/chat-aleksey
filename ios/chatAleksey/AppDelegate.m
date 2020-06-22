@@ -5,6 +5,7 @@
 #import <React/RCTRootView.h>
 
 #import <Firebase.h>
+#import <GoogleMaps/GoogleMaps.h>
 
 #if DEBUG
 #import <FlipperKit/FlipperClient.h>
@@ -29,6 +30,8 @@ static void InitializeFlipper(UIApplication *application) {
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [GMSServices provideAPIKey:@"AIzaSyAx5z_4MkyZMVKWkW-ZfLTsItPASjTsLLE"];
+
   if ([FIRApp defaultApp] == nil) {
     [FIRApp configure];
   }

@@ -31,8 +31,8 @@
 			</array>
 		</dict>
 		<dict>
-			<key></key>
-			<string></string>
+			<key/>
+			<string/>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 		</dict>
@@ -55,7 +55,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>opensans-regular.ttf</string>
@@ -64,6 +64,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

@@ -53,7 +53,7 @@
     "@typescript-eslint/eslint-plugin": "^2.25.0",
     "@typescript-eslint/parser": "^2.25.0",
     "@ui-kitten/metro-config": "5.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "babel-jest": "^24.9.0",
     "detox": "^16.8.2",
     "eslint": "^6.5.1",
